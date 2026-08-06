@@ -1,4 +1,3 @@
-from typing import AsyncGenerator
 from fastapi import Header, HTTPException, status, Depends
 
 from app.config.config import Settings, get_settings

@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from enum import Enum
 from typing import Dict, Any, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class EventSource(str, Enum):
@@ -29,8 +29,8 @@ class KafkaIngestionMessage(BaseModel):
     region: Optional[str] = Field(None, description="Geographic region / datacenter zone")
     payload: Dict[str, Any] = Field(default_factory=dict, description="Raw event details & attributes")
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "event_id": "evt-88392-oss",
                 "source": "Comarch OSS",
@@ -46,3 +46,4 @@ class KafkaIngestionMessage(BaseModel):
                 }
             }
         }
+    )

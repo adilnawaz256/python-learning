@@ -1,8 +1,7 @@
-version: '3.8'
-
 services:
   # 1. NOC Ingestion Python FastAPI Service
   noc-ingestion:
+    build: .
     image: noc-ingestion:1.0
     container_name: noc-ingestion-app
     ports:
@@ -24,9 +23,12 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=noc_audit
     depends_on:
-      - minio
-      - kafka
-      - postgres
+      minio:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
     restart: unless-stopped
 
   # 2. MinIO Object Storage
@@ -42,6 +44,12 @@ services:
     command: server /data --console-address ":9001"
     volumes:
       - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     restart: unless-stopped
 
   # 3. Apache Kafka (KRaft mode)
@@ -61,7 +69,16 @@ services:
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       CLUSTER_ID: 5L6g3nShT-eMCtK--X86sw
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
     restart: unless-stopped
+
   # 4. PostgreSQL Database
   postgres:
     image: postgres:16-alpine
@@ -74,6 +91,12 @@ services:
       - POSTGRES_DB=noc_audit
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d noc_audit"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     restart: unless-stopped
 
 volumes:

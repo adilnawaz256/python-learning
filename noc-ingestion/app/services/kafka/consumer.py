@@ -22,7 +22,7 @@ class KafkaConsumerService:
         self._task: Optional[asyncio.Task] = None
         self.processed_count = 0
 
-    async def start((self)) -> None:
+    async def start(self) -> None:
         """Starts Kafka consumer background task."""
         if self._is_running:
             return

@@ -1,6 +1,6 @@
 from typing import Optional, Dict, Any, List
 from enum import Enum
-from pydantic import BaseModel, Field, HttpUrl
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class TargetSystem(str, Enum):
@@ -20,8 +20,8 @@ class RESTCollectorRequest(BaseModel):
     max_pages: int = Field(default=5, ge=1, le=50, description="Max pagination pages to fetch")
     page_size: int = Field(default=100, ge=1, le=1000, description="Results per page")
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "target_system": "ServiceNow",
                 "url": "https://servicenow.telecom.local/api/now/table/incident",
@@ -31,6 +31,7 @@ class RESTCollectorRequest(BaseModel):
                 "page_size": 50
             }
         }
+    )
 
 
 class RESTCollectorResult(BaseModel):

@@ -1,6 +1,7 @@
 import time
 from fastapi import APIRouter, Depends
 from app.api.deps import get_minio, get_kafka_consumer
+from app.config.config import get_settings
 from app.schemas.response_schema import APIResponse, HealthResponse, MetricsResponse
 from app.services.storage.minio.client import MinIOService
 from app.services.kafka.consumer import KafkaConsumerService

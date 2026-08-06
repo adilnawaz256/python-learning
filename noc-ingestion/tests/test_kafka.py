@@ -1,7 +1,5 @@
 import pytest
-from app.schemas.kafka_schema import KafkaIngestionMessage, EventSource, AlarmSeverity
 from app.services.kafka.consumer import KafkaConsumerService
-from app.services.kafka.simulator import KafkaSimulatorService
 from app.core.exceptions import SchemaValidationError
 
 

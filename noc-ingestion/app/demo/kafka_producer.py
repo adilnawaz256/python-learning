@@ -49,7 +49,7 @@ class DemoKafkaProducer:
             await self.producer.stop()
             logger.info("Demo Kafka Producer stopped gracefully.")
 
-    async def produce_single_demo_event((self)) -> dict:
+    async def produce_single_demo_event(self) -> dict:
         """Generates 1 realistic Comarch OSS alarm event and ingests it."""
         alarms = DemoDataGenerator.generate_alarms(count=1)
         alarm = alarms[0]

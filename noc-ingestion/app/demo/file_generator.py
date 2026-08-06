@@ -3,7 +3,7 @@ import json
 import pandas as pd
 from typing import Dict, Any
 
-from app.core.logger import log_event, logger
+from app.core.logger import log_event
 from app.demo.rest_generator import DemoDataGenerator
 
 
