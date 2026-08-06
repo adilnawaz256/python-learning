@@ -1,6 +1,6 @@
 # Apache Spark Processing Environment (Phase 2)
 
-This directory contains the complete Apache Spark cluster configuration, PySpark jobs, helper scripts, and future-ready lakehouse definitions for the Telecom NOC Data Platform.
+This directory contains the complete Apache Spark cluster configuration, PySpark jobs, helper scripts, and future-ready lakehouse definitions for the Telecom NOC Data Platform using the official **Apache Spark** Docker image (`spark:3.5.1-python3`).
 
 ---
 
@@ -11,6 +11,7 @@ External Systems ──► FastAPI Ingestion ──► Kafka ──► MinIO (Ra
                                                          │
                                                          ▼
                                             Apache Spark Cluster (Master + Worker)
+                                            [Official Image: spark:3.5.1-python3]
                                             [Hadoop S3A FileSystem Connector]
                                                          │
                                                          ▼
@@ -71,10 +72,10 @@ Option A: Using the helper script
 
 Option B: Manual `spark-submit` command
 ```bash
-docker exec -it noc-spark-master spark-submit \
+docker exec -it noc-spark-master /opt/spark/bin/spark-submit \
   --master spark://spark-master:7077 \
-  --properties-file /opt/bitnami/spark/conf/spark-defaults.conf \
-  /opt/bitnami/spark/spark-apps/jobs/read_minio.py
+  --properties-file /opt/spark/conf/spark-defaults.conf \
+  /opt/spark/spark-apps/jobs/read_minio.py
 ```
 
 ---
