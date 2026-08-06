@@ -1,7 +1,6 @@
 services:
   # 1. NOC Ingestion Python FastAPI Service
   noc-ingestion:
-    build: .
     image: noc-ingestion:1.0
     container_name: noc-ingestion-app
     ports:
