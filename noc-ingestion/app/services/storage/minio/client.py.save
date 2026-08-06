@@ -7,7 +7,7 @@ from minio import Minio
 from minio.error import S3Error
 
 
-from app.config.config import get_settings
+from app.config.get_settings import get_settings
 from app.core.logger import log_event, logger
 from app.core.exceptions import StorageError, MinIOConnectionError
 
@@ -202,3 +202,4 @@ def get_minio_service() -> MinIOService:
     service = MinIOService()
     service.connect()
     return service
+.
