@@ -114,7 +114,10 @@ services:
     image: spark:3.5.1-python3
     container_name: noc-spark-master
     hostname: spark-master
-    command: /opt/spark/spark-apps/entrypoint.sh /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master
+    entrypoint: ["/opt/spark/spark-apps/entrypoint.sh"]
+    command:
+      - /opt/spark/bin/spark-class
+      - org.apache.spark.deploy.master.Master
     environment:
       - SPARK_NO_DAEMONIZE=true
       - HOME=/tmp
@@ -147,7 +150,11 @@ services:
   spark-worker:
     image: spark:3.5.1-python3
     container_name: noc-spark-worker
-    command: /opt/spark/spark-apps/entrypoint.sh /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
+    entrypoint: ["/opt/spark/spark-apps/entrypoint.sh"]
+    command:
+      - /opt/spark/bin/spark-class
+      - org.apache.spark.deploy.worker.Worker
+      - spark://spark-master:7077
     environment:
       - SPARK_NO_DAEMONIZE=true
       - SPARK_WORKER_WEBUI_PORT=8081
