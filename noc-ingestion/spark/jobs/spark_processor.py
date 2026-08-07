@@ -42,6 +42,9 @@ def create_spark_session() -> SparkSession:
             .config("spark.hadoop.fs.s3a.connection.ssl.enabled", "false")
             .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
             .config("spark.hadoop.fs.s3a.aws.credentials.provider", "org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider")
+            .config("spark.hadoop.fs.s3a.fast.upload", "true")
+            .config("spark.hadoop.fs.s3a.threads.max", "20")
+            .config("spark.hadoop.fs.s3a.connection.maximum", "100")
             .config("spark.sql.parquet.compression.codec", "snappy")
             .config("spark.sql.extensions", "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions")
             .config("spark.sql.catalog.iceberg", "org.apache.iceberg.spark.SparkCatalog")
@@ -136,9 +139,9 @@ def process_category(spark: SparkSession, s3_input_path: str, category: str, ice
     logger.info("[STEP 3] Reading raw data format '%s' for category '%s' from: %s", file_format, category, s3_input_path)
     try:
         if file_format == "json":
-            df = spark.read.option("multiline", "true").json(s3_input_path)
+            df = spark.read.option("recursiveFileLookup", "true").option("multiline", "true").json(s3_input_path)
         elif file_format == "csv":
-            df = spark.read.option("header", "true").option("inferSchema", "true").csv(s3_input_path)
+            df = spark.read.option("recursiveFileLookup", "true").option("header", "true").option("inferSchema", "true").csv(s3_input_path)
         else:
             logger.warning(f"Unsupported format '{file_format}'")
             return
@@ -232,14 +235,14 @@ def main():
     base_s3_uri = f"s3a://{bucket_name}"
 
     sources = [
-        (f"{base_s3_uri}/raw/kafka/alarms/*/*/*/*", "alarms", "alarms", "json"),
-        (f"{base_s3_uri}/raw/kafka/tickets/*/*/*/*", "tickets", "tickets", "json"),
-        (f"{base_s3_uri}/raw/kafka/network/*/*/*/*", "network", "network_events", "json"),
-        (f"{base_s3_uri}/raw/kafka/security/*/*/*/*", "security", "security_events", "json"),
-        (f"{base_s3_uri}/raw/kafka/performance/*/*/*/*", "performance", "performance_metrics", "json"),
-        (f"{base_s3_uri}/raw/rest/*/*/*/*", "rest", "network_events", "json"),
-        (f"{base_s3_uri}/raw/uploads/csv/*/*/*/*", "uploads_csv", "network_events", "csv"),
-        (f"{base_s3_uri}/raw/uploads/json/*/*/*/*", "uploads_json", "network_events", "json"),
+        (f"{base_s3_uri}/raw/kafka/alarms", "alarms", "alarms", "json"),
+        (f"{base_s3_uri}/raw/kafka/tickets", "tickets", "tickets", "json"),
+        (f"{base_s3_uri}/raw/kafka/network", "network", "network_events", "json"),
+        (f"{base_s3_uri}/raw/kafka/security", "security", "security_events", "json"),
+        (f"{base_s3_uri}/raw/kafka/performance", "performance", "performance_metrics", "json"),
+        (f"{base_s3_uri}/raw/rest", "rest", "network_events", "json"),
+        (f"{base_s3_uri}/raw/uploads/csv", "uploads_csv", "network_events", "csv"),
+        (f"{base_s3_uri}/raw/uploads/json", "uploads_json", "network_events", "json"),
     ]
     step2_elapsed = time.time() - step2_start
     logger.info("[STEP 2 COMPLETE] Source paths constructed (%d sources) in %.2f sec", len(sources), step2_elapsed)
