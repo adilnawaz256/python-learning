@@ -114,12 +114,10 @@ services:
     image: spark:3.5.1-python3
     container_name: noc-spark-master
     hostname: spark-master
-    command: bash -c "mkdir -p /tmp/.ivy2/cache && /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master"
+    command: /opt/spark/spark-apps/entrypoint.sh /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master
     environment:
       - SPARK_NO_DAEMONIZE=true
       - HOME=/tmp
-      - SPARK_DRIVER_PARAM_INT_IVY_DIR=/tmp/.ivy2
-      - SPARK_EXECUTOR_PARAM_INT_IVY_DIR=/tmp/.ivy2
       - MINIO_ENDPOINT_URL=http://minio:9000
       - MINIO_ACCESS_KEY=minioadmin
       - MINIO_SECRET_KEY=minioadmin
@@ -132,6 +130,7 @@ services:
       - ./spark:/opt/spark/spark-apps
       - ./spark/config/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf
       - ./spark/config/log4j2.properties:/opt/spark/conf/log4j2.properties
+      - ./spark/extra-jars:/opt/spark/extra-jars
       - spark_data:/opt/spark/work-dir
     depends_on:
       minio:
@@ -148,15 +147,13 @@ services:
   spark-worker:
     image: spark:3.5.1-python3
     container_name: noc-spark-worker
-    command: bash -c "mkdir -p /tmp/.ivy2/cache && /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077"
+    command: /opt/spark/spark-apps/entrypoint.sh /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
     environment:
       - SPARK_NO_DAEMONIZE=true
       - SPARK_WORKER_WEBUI_PORT=8081
       - SPARK_WORKER_MEMORY=2g
       - SPARK_WORKER_CORES=2
       - HOME=/tmp
-      - SPARK_DRIVER_PARAM_INT_IVY_DIR=/tmp/.ivy2
-      - SPARK_EXECUTOR_PARAM_INT_IVY_DIR=/tmp/.ivy2
       - MINIO_ENDPOINT_URL=http://minio:9000
       - MINIO_ACCESS_KEY=minioadmin
       - MINIO_SECRET_KEY=minioadmin
@@ -168,6 +165,7 @@ services:
       - ./spark:/opt/spark/spark-apps
       - ./spark/config/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf
       - ./spark/config/log4j2.properties:/opt/spark/conf/log4j2.properties
+      - ./spark/extra-jars:/opt/spark/extra-jars
       - spark_data:/opt/spark/work-dir
     depends_on:
       spark-master:

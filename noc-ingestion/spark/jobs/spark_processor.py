@@ -24,8 +24,9 @@ def create_spark_session() -> SparkSession:
     """Initializes SparkSession configured for MinIO S3A storage and Apache Iceberg catalog."""
     builder = (
         SparkSession.builder.appName("NOC-Spark-ETL-Processor")
-        .config("spark.driver.extraClassPath", "/tmp/.ivy2/jars/*:/opt/spark/jars/*")
-        .config("spark.executor.extraClassPath", "/tmp/.ivy2/jars/*:/opt/spark/jars/*")
+        .config("spark.driver.extraClassPath", "/opt/spark/extra-jars/*:/opt/spark/jars/*")
+        .config("spark.executor.extraClassPath", "/opt/spark/extra-jars/*:/opt/spark/jars/*")
+        .config("spark.jars", "/opt/spark/extra-jars/hadoop-aws-3.3.4.jar,/opt/spark/extra-jars/aws-java-sdk-bundle-1.12.262.jar,/opt/spark/extra-jars/iceberg-spark-runtime-3.5_2.12-1.5.0.jar")
         .config("spark.hadoop.fs.s3a.endpoint", os.getenv("MINIO_ENDPOINT_URL", "http://minio:9000"))
         .config("spark.hadoop.fs.s3a.access.key", os.getenv("MINIO_ACCESS_KEY", "minioadmin"))
         .config("spark.hadoop.fs.s3a.secret.key", os.getenv("MINIO_SECRET_KEY", "minioadmin"))

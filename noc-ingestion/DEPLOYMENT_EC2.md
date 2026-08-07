@@ -4,12 +4,17 @@ This guide provides step-by-step instructions for deploying and validating the *
 
 ---
 
-## 1. Official Apache Spark Image (`spark:3.5.1-python3`) Configuration
+## 1. Classpath & AWS S3A SDK Pre-fetching Configuration
 
-The platform uses official `spark:3.5.1-python3` Docker images directly without requiring `docker compose build`.
+To guarantee `com.amazonaws.AmazonClientException` and `org.apache.hadoop.fs.s3a.S3AFileSystem` are present on Spark's JVM ClassLoader at runtime without relying on Ivy dynamic resolution:
 
-- **Writable HOME & Ivy Cache**: Configured `HOME=/tmp` environment variable and `command: bash -c "mkdir -p /tmp/.ivy2/cache && ..."` in `docker-compose.yml`.
-- **Ivy Configuration (`spark/config/spark-defaults.conf`)**: Configured `spark.jars.ivy /tmp/.ivy2` for Maven dependency downloads (`hadoop-aws`, `iceberg-spark-runtime-3.5_2.12`).
+- **Automatic Pre-fetching (`spark/entrypoint.sh`)**: Pre-fetches `hadoop-aws-3.3.4.jar`, `aws-java-sdk-bundle-1.12.262.jar`, and `iceberg-spark-runtime-3.5_2.12-1.5.0.jar` into `/opt/spark/extra-jars/` when container boots up.
+- **System Classpath Injection (`spark/config/spark-defaults.conf`)**:
+  ```conf
+  spark.driver.extraClassPath         /opt/spark/extra-jars/*:/opt/spark/jars/*
+  spark.executor.extraClassPath       /opt/spark/extra-jars/*:/opt/spark/jars/*
+  spark.jars                          /opt/spark/extra-jars/hadoop-aws-3.3.4.jar,/opt/spark/extra-jars/aws-java-sdk-bundle-1.12.262.jar,/opt/spark/extra-jars/iceberg-spark-runtime-3.5_2.12-1.5.0.jar
+  ```
 
 ---
 
@@ -19,7 +24,7 @@ On your local development machine:
 
 ```bash
 git add .
-git commit -m "fix: Official spark:3.5.1-python3 image configuration with runtime HOME=/tmp and Ivy cache"
+git commit -m "fix: Pre-fetch AWS SDK & S3A JARs into extra-jars and configure JVM extraClassPath"
 git push origin main
 ```
 
@@ -36,20 +41,15 @@ cd noc-ingestion
 git pull origin main
 ```
 
-Launch all containers using standard `docker-compose`:
+Launch all containers:
 
 ```bash
 docker-compose down
 docker-compose up -d
-```
-
-Verify all 9 services are running and in the `Up` state:
-
-```bash
 docker-compose ps
 ```
 
-You should see:
+Verify all 9 services are running and in the `Up` state:
 1. `noc-ingestion-app` (FastAPI Ingestion Service: 8000)
 2. `noc-mock-external-api` (Mock Monitoring REST API: 8001)
 3. `noc-kafka` (Apache Kafka Broker: 9092)
@@ -71,16 +71,6 @@ Trigger the PySpark ETL job to process raw telemetry and populate the Apache Ice
 docker exec -it noc-spark-master /opt/spark/bin/spark-submit /opt/spark/spark-apps/jobs/spark_processor.py
 ```
 
-Check Spark logs:
-Look for:
-- `Appended records to Iceberg table 'iceberg.noc.alarms'`
-- `Appended records to Iceberg table 'iceberg.noc.tickets'`
-- `Appended records to Iceberg table 'iceberg.noc.network_events'`
-- `Appended records to Iceberg table 'iceberg.noc.security_events'`
-- `Appended records to Iceberg table 'iceberg.noc.performance_metrics'`
-
----
-
 ### Step B: Verify Trino SQL Queries on Iceberg REST Tables
 Connect to the Trino container and query all 5 Apache Iceberg tables with standard SQL:
 
@@ -91,39 +81,15 @@ docker exec -it noc-trino trino
 Inside Trino SQL Prompt, run:
 
 ```sql
--- 1. Show available catalogs
 SHOW CATALOGS;
-
--- 2. Show schemas inside Iceberg catalog
 SHOW SCHEMAS FROM iceberg;
-
--- 3. Show tables inside schema 'noc'
 SHOW TABLES FROM iceberg.noc;
 
--- 4. Query Alarms Iceberg Table
-SELECT event_id, node_id, region, vendor, severity_clean, event_timestamp
-FROM iceberg.noc.alarms
-LIMIT 10;
-
--- 5. Query Trouble Tickets Iceberg Table
-SELECT event_id, source, severity_clean, event_timestamp
-FROM iceberg.noc.tickets
-LIMIT 10;
-
--- 6. Query Network Events Iceberg Table
-SELECT event_id, node_id, region, severity_clean, event_timestamp
-FROM iceberg.noc.network_events
-LIMIT 10;
-
--- 7. Query Security Events Iceberg Table
-SELECT event_id, node_id, region, severity_clean, event_timestamp
-FROM iceberg.noc.security_events
-LIMIT 10;
-
--- 8. Query Performance Metrics Iceberg Table
-SELECT event_id, node_id, region, severity_clean, event_timestamp
-FROM iceberg.noc.performance_metrics
-LIMIT 10;
+SELECT * FROM iceberg.noc.alarms LIMIT 10;
+SELECT * FROM iceberg.noc.tickets LIMIT 10;
+SELECT * FROM iceberg.noc.network_events LIMIT 10;
+SELECT * FROM iceberg.noc.security_events LIMIT 10;
+SELECT * FROM iceberg.noc.performance_metrics LIMIT 10;
 ```
 
 ---
