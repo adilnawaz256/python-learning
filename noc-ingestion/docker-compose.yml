@@ -35,9 +35,7 @@ services:
 
   # 1b. Mock External REST API Service
   mock-external-api:
-    build:
-      context: ./mock-external-api
-      dockerfile: Dockerfile
+    image: noc-ingestion-mock-external-api:latest
     container_name: noc-mock-external-api
     ports:
       - "8001:8001"
