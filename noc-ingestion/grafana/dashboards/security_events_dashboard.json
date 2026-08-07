@@ -15,10 +15,28 @@
       "targets": [
         {
           "datasource": { "type": "trino", "uid": "Trino Iceberg" },
+          "format": "table",
           "rawSql": "SELECT COALESCE(COUNT(*), 0) AS total_threats FROM iceberg.noc.security_events",
-          "refId": "Total_Threats"
+          "refId": "A"
         }
-      ]
+      ],
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": ["lastNotNull"],
+          "fields": ""
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "fieldConfig": {
+        "defaults": {
+          "noValue": "0",
+          "decimals": 0
+        },
+        "overrides": []
+      }
     },
     {
       "title": "Threat Level Distribution",
@@ -28,10 +46,28 @@
       "targets": [
         {
           "datasource": { "type": "trino", "uid": "Trino Iceberg" },
+          "format": "table",
           "rawSql": "SELECT severity_clean AS threat_level, COUNT(*) AS count FROM iceberg.noc.security_events GROUP BY severity_clean",
-          "refId": "Threat_Level"
+          "refId": "A"
         }
-      ]
+      ],
+      "options": {
+        "reduceOptions": {
+          "values": true,
+          "calcs": []
+        },
+        "pieType": "pie",
+        "tooltip": { "mode": "single" },
+        "legend": {
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        }
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      }
     },
     {
       "title": "Threat Events by Region",
@@ -41,10 +77,25 @@
       "targets": [
         {
           "datasource": { "type": "trino", "uid": "Trino Iceberg" },
+          "format": "table",
           "rawSql": "SELECT region, COUNT(*) AS count FROM iceberg.noc.security_events GROUP BY region",
-          "refId": "Threat_Region"
+          "refId": "A"
         }
-      ]
+      ],
+      "options": {
+        "xTickLabelRotation": 0,
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0
+        },
+        "overrides": []
+      }
     },
     {
       "title": "Security Threat Events Trend",
@@ -54,10 +105,30 @@
       "targets": [
         {
           "datasource": { "type": "trino", "uid": "Trino Iceberg" },
+          "format": "table",
           "rawSql": "SELECT date_trunc('hour', event_timestamp) AS time, COUNT(*) AS threat_count FROM iceberg.noc.security_events GROUP BY 1 ORDER BY 1",
-          "refId": "Security_Trend"
+          "refId": "A"
         }
-      ]
+      ],
+      "options": {
+        "tooltip": { "mode": "single" },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 10
+          },
+          "decimals": 0
+        },
+        "overrides": []
+      }
     },
     {
       "title": "Recent Security Threat Events Log",
@@ -67,10 +138,20 @@
       "targets": [
         {
           "datasource": { "type": "trino", "uid": "Trino Iceberg" },
-          "rawSql": "SELECT event_id, node_id, region, severity_clean, event_timestamp FROM iceberg.noc.security_events ORDER BY event_timestamp DESC LIMIT 50",
-          "refId": "Security_Log"
+          "format": "table",
+          "rawSql": "SELECT event_id AS \"Event ID\", node_id AS \"Node ID\", region AS \"Region\", severity_clean AS \"Threat Level\", event_timestamp AS \"Event Timestamp\" FROM iceberg.noc.security_events ORDER BY event_timestamp DESC LIMIT 50",
+          "refId": "A"
         }
-      ]
+      ],
+      "options": {
+        "cellHeight": "sm",
+        "footer": { "show": false },
+        "showHeader": true
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      }
     }
   ],
   "refresh": "10s",

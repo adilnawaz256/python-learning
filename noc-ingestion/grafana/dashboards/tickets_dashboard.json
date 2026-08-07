@@ -15,10 +15,28 @@
       "targets": [
         {
           "datasource": { "type": "trino", "uid": "Trino Iceberg" },
+          "format": "table",
           "rawSql": "SELECT COALESCE(COUNT(*), 0) AS total_tickets FROM iceberg.noc.tickets",
-          "refId": "Total_Tickets"
+          "refId": "A"
         }
-      ]
+      ],
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": ["lastNotNull"],
+          "fields": ""
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "fieldConfig": {
+        "defaults": {
+          "noValue": "0",
+          "decimals": 0
+        },
+        "overrides": []
+      }
     },
     {
       "title": "Tickets by Priority",
@@ -28,10 +46,28 @@
       "targets": [
         {
           "datasource": { "type": "trino", "uid": "Trino Iceberg" },
+          "format": "table",
           "rawSql": "SELECT severity_clean AS priority, COUNT(*) AS count FROM iceberg.noc.tickets GROUP BY severity_clean",
-          "refId": "Tickets_Priority"
+          "refId": "A"
         }
-      ]
+      ],
+      "options": {
+        "reduceOptions": {
+          "values": true,
+          "calcs": []
+        },
+        "pieType": "pie",
+        "tooltip": { "mode": "single" },
+        "legend": {
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        }
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      }
     },
     {
       "title": "Tickets by Assigned Group",
@@ -41,10 +77,25 @@
       "targets": [
         {
           "datasource": { "type": "trino", "uid": "Trino Iceberg" },
+          "format": "table",
           "rawSql": "SELECT source AS assigned_group, COUNT(*) AS count FROM iceberg.noc.tickets GROUP BY source",
-          "refId": "Tickets_Group"
+          "refId": "A"
         }
-      ]
+      ],
+      "options": {
+        "xTickLabelRotation": 0,
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0
+        },
+        "overrides": []
+      }
     },
     {
       "title": "Trouble Tickets Creation Trend",
@@ -54,10 +105,30 @@
       "targets": [
         {
           "datasource": { "type": "trino", "uid": "Trino Iceberg" },
+          "format": "table",
           "rawSql": "SELECT date_trunc('hour', event_timestamp) AS time, COUNT(*) AS tickets_count FROM iceberg.noc.tickets GROUP BY 1 ORDER BY 1",
-          "refId": "Tickets_Trend"
+          "refId": "A"
         }
-      ]
+      ],
+      "options": {
+        "tooltip": { "mode": "single" },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 10
+          },
+          "decimals": 0
+        },
+        "overrides": []
+      }
     },
     {
       "title": "Recent Incident Ticket Log",
@@ -67,10 +138,20 @@
       "targets": [
         {
           "datasource": { "type": "trino", "uid": "Trino Iceberg" },
-          "rawSql": "SELECT event_id, source AS assigned_group, severity_clean AS priority, event_timestamp FROM iceberg.noc.tickets ORDER BY event_timestamp DESC LIMIT 50",
-          "refId": "Tickets_Log"
+          "format": "table",
+          "rawSql": "SELECT event_id AS \"Ticket ID\", source AS \"Assigned Group\", severity_clean AS \"Priority\", event_timestamp AS \"Created Timestamp\" FROM iceberg.noc.tickets ORDER BY event_timestamp DESC LIMIT 50",
+          "refId": "A"
         }
-      ]
+      ],
+      "options": {
+        "cellHeight": "sm",
+        "footer": { "show": false },
+        "showHeader": true
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      }
     }
   ],
   "refresh": "10s",
