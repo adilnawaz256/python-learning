@@ -1,13 +1,11 @@
 # Spark Custom JARS Directory
 
-This folder is designated for custom JAR files required by Apache Spark jobs.
+This project vendors required runtime dependencies in `spark/extra-jars/` to avoid network dependency resolution at runtime.
 
-## Default Package Resolution
-By default, required Maven packages are resolved automatically via `spark.jars.packages` in `spark/config/spark-defaults.conf`:
-- `org.apache.hadoop:hadoop-aws:3.3.4`
-- `com.amazonaws:aws-java-sdk-bundle:1.12.262`
-- `org.apache.iceberg:iceberg-spark-runtime-3.5_2.12:1.5.0`
-- `com.crealytics:spark-excel_2.12:3.5.0_0.20.4`
+## Vendored Dependency Resolution
+The following vendored JARs are provided in `spark/extra-jars/` and loaded directly into Spark via `spark.driver.extraClassPath`, `spark.executor.extraClassPath`, and `spark.jars` in `spark/config/spark-defaults.conf`:
+- `aws-java-sdk-bundle-1.12.262.jar`
+- `hadoop-aws-3.3.4.jar`
+- `iceberg-spark-runtime-3.5_2.12-1.5.0.jar`
 
-## Manual Offline JAR Provisioning
-If deploying in an isolated network without public Maven access, place `.jar` files here and mount them into `/opt/bitnami/spark/jars/`.
+`spark.jars.packages` and runtime Ivy downloads have been removed completely.

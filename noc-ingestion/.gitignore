@@ -46,3 +46,4 @@ app/logs/*.log
 *.swp
 *~
 .DS_Store
+spark/extra-jars/*.jar
