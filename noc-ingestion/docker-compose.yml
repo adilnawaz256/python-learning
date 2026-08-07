@@ -111,16 +111,15 @@ services:
 
   # 5. Apache Spark Master
   spark-master:
-    build:
-      context: ./spark
-      dockerfile: Dockerfile
-    image: noc-spark-custom:3.5.1
+    image: spark:3.5.1-python3
     container_name: noc-spark-master
     hostname: spark-master
-    command: /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master
+    command: bash -c "mkdir -p /tmp/.ivy2/cache && /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master"
     environment:
       - SPARK_NO_DAEMONIZE=true
-      - HOME=/home/spark
+      - HOME=/tmp
+      - SPARK_DRIVER_PARAM_INT_IVY_DIR=/tmp/.ivy2
+      - SPARK_EXECUTOR_PARAM_INT_IVY_DIR=/tmp/.ivy2
       - MINIO_ENDPOINT_URL=http://minio:9000
       - MINIO_ACCESS_KEY=minioadmin
       - MINIO_SECRET_KEY=minioadmin
@@ -147,18 +146,17 @@ services:
 
   # 6. Apache Spark Worker
   spark-worker:
-    build:
-      context: ./spark
-      dockerfile: Dockerfile
-    image: noc-spark-custom:3.5.1
+    image: spark:3.5.1-python3
     container_name: noc-spark-worker
-    command: /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
+    command: bash -c "mkdir -p /tmp/.ivy2/cache && /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077"
     environment:
       - SPARK_NO_DAEMONIZE=true
       - SPARK_WORKER_WEBUI_PORT=8081
       - SPARK_WORKER_MEMORY=2g
       - SPARK_WORKER_CORES=2
-      - HOME=/home/spark
+      - HOME=/tmp
+      - SPARK_DRIVER_PARAM_INT_IVY_DIR=/tmp/.ivy2
+      - SPARK_EXECUTOR_PARAM_INT_IVY_DIR=/tmp/.ivy2
       - MINIO_ENDPOINT_URL=http://minio:9000
       - MINIO_ACCESS_KEY=minioadmin
       - MINIO_SECRET_KEY=minioadmin

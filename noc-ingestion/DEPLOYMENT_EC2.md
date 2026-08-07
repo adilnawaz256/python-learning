@@ -4,25 +4,12 @@ This guide provides step-by-step instructions for deploying and validating the *
 
 ---
 
-## 1. Spark Container Fix & Production Configuration
+## 1. Official Apache Spark Image (`spark:3.5.1-python3`) Configuration
 
-- **Spark Custom Dockerfile (`spark/Dockerfile`)**: Creates `/home/spark` and `/tmp/.ivy2` with write permissions for non-root `spark` user (UID 185), enabling `spark-submit` to download Maven dependencies (`iceberg-spark-runtime`, `hadoop-aws`, `spark-excel`).
-- **Spark Ivy Cache Configuration (`spark/config/spark-defaults.conf`)**: Configured `spark.jars.ivy /tmp/.ivy2` and REST catalog URI `http://iceberg-rest:8181`.
+The platform uses official `spark:3.5.1-python3` Docker images directly without requiring `docker compose build`.
 
-### `spark/Dockerfile`:
-```dockerfile
-FROM spark:3.5.1-python3
-
-USER root
-
-RUN mkdir -p /home/spark/.ivy2/cache /tmp/.ivy2 /opt/spark/work-dir && \
-    chown -R 185:0 /home/spark /tmp/.ivy2 /opt/spark/work-dir && \
-    chmod -R 777 /home/spark /tmp/.ivy2 /opt/spark/work-dir
-
-ENV HOME=/home/spark
-
-USER 185
-```
+- **Writable HOME & Ivy Cache**: Configured `HOME=/tmp` environment variable and `command: bash -c "mkdir -p /tmp/.ivy2/cache && ..."` in `docker-compose.yml`.
+- **Ivy Configuration (`spark/config/spark-defaults.conf`)**: Configured `spark.jars.ivy /tmp/.ivy2` for Maven dependency downloads (`hadoop-aws`, `iceberg-spark-runtime-3.5_2.12`, `spark-excel_2.12`).
 
 ---
 
@@ -32,7 +19,7 @@ On your local development machine:
 
 ```bash
 git add .
-git commit -m "fix: Custom Spark Dockerfile with writable HOME and Ivy cache directory"
+git commit -m "fix: Official spark:3.5.1-python3 image configuration with runtime HOME=/tmp and Ivy cache"
 git push origin main
 ```
 
@@ -49,11 +36,11 @@ cd noc-ingestion
 git pull origin main
 ```
 
-Rebuild and launch all containers with Docker Compose:
+Launch all containers using standard `docker-compose`:
 
 ```bash
 docker-compose down
-docker-compose up -d --build
+docker-compose up -d
 ```
 
 Verify all 9 services are running and in the `Up` state:
