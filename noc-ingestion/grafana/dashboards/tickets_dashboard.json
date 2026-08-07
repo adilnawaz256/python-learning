@@ -14,7 +14,7 @@
       "id": 1,
       "targets": [
         {
-          "datasource": { "type": "trinodb-trino-datasource", "uid": "Trino Iceberg" },
+          "datasource": { "type": "trino", "uid": "Trino Iceberg" },
           "rawSql": "SELECT COUNT(*) as total_tickets FROM iceberg.noc.tickets",
           "refId": "A"
         }
@@ -27,7 +27,7 @@
       "id": 2,
       "targets": [
         {
-          "datasource": { "type": "trinodb-trino-datasource", "uid": "Trino Iceberg" },
+          "datasource": { "type": "trino", "uid": "Trino Iceberg" },
           "rawSql": "SELECT severity_clean as priority, COUNT(*) as count FROM iceberg.noc.tickets GROUP BY severity_clean",
           "refId": "A"
         }
@@ -40,7 +40,7 @@
       "id": 3,
       "targets": [
         {
-          "datasource": { "type": "trinodb-trino-datasource", "uid": "Trino Iceberg" },
+          "datasource": { "type": "trino", "uid": "Trino Iceberg" },
           "rawSql": "SELECT event_id, source, severity_clean, event_timestamp FROM iceberg.noc.tickets ORDER BY event_timestamp DESC LIMIT 50",
           "refId": "A"
         }

@@ -178,6 +178,7 @@ services:
       - ./trino/config.properties:/etc/trino/config.properties
       - ./trino/node.properties:/etc/trino/node.properties
       - ./trino/jvm.config:/etc/trino/jvm.config
+      - trino_data:/data/trino
     depends_on:
       minio:
         condition: service_healthy
@@ -192,7 +193,7 @@ services:
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
-      - GF_INSTALL_PLUGINS=trinodb-trino-datasource
+      - GF_INSTALL_PLUGINS=trino
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning
       - ./grafana/dashboards:/var/lib/grafana/dashboards
@@ -206,4 +207,5 @@ volumes:
   kafka_data:
   postgres_data:
   spark_data:
+  trino_data:
   grafana_data:

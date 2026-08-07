@@ -14,7 +14,7 @@
       "id": 1,
       "targets": [
         {
-          "datasource": { "type": "trinodb-trino-datasource", "uid": "Trino Iceberg" },
+          "datasource": { "type": "trino", "uid": "Trino Iceberg" },
           "rawSql": "SELECT COUNT(*) as total_metrics FROM iceberg.noc.performance_metrics",
           "refId": "A"
         }
@@ -27,7 +27,7 @@
       "id": 2,
       "targets": [
         {
-          "datasource": { "type": "trinodb-trino-datasource", "uid": "Trino Iceberg" },
+          "datasource": { "type": "trino", "uid": "Trino Iceberg" },
           "rawSql": "SELECT region, COUNT(*) as count FROM iceberg.noc.performance_metrics GROUP BY region",
           "refId": "A"
         }
@@ -40,7 +40,7 @@
       "id": 3,
       "targets": [
         {
-          "datasource": { "type": "trinodb-trino-datasource", "uid": "Trino Iceberg" },
+          "datasource": { "type": "trino", "uid": "Trino Iceberg" },
           "rawSql": "SELECT event_id, node_id, region, severity_clean, event_timestamp FROM iceberg.noc.performance_metrics ORDER BY event_timestamp DESC LIMIT 50",
           "refId": "A"
         }
