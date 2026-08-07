@@ -14,8 +14,8 @@
       "id": 1,
       "targets": [
         {
-          "datasource": { "type": "trino", "uid": "Trino Iceberg" },
-          "format": "table",
+          "datasource": { "type": "trino-datasource", "uid": "Trino Iceberg" },
+          "format": 0,
           "rawSql": "SELECT COALESCE(COUNT(*), 0) AS total_tickets FROM iceberg.noc.tickets",
           "refId": "A"
         }
@@ -46,8 +46,8 @@
       "id": 2,
       "targets": [
         {
-          "datasource": { "type": "trino", "uid": "Trino Iceberg" },
-          "format": "table",
+          "datasource": { "type": "trino-datasource", "uid": "Trino Iceberg" },
+          "format": 0,
           "rawSql": "SELECT severity_clean AS priority, COUNT(*) AS count FROM iceberg.noc.tickets GROUP BY severity_clean",
           "refId": "A"
         }
@@ -78,8 +78,8 @@
       "id": 3,
       "targets": [
         {
-          "datasource": { "type": "trino", "uid": "Trino Iceberg" },
-          "format": "table",
+          "datasource": { "type": "trino-datasource", "uid": "Trino Iceberg" },
+          "format": 0,
           "rawSql": "SELECT source AS assigned_group, COUNT(*) AS count FROM iceberg.noc.tickets GROUP BY source",
           "refId": "A"
         }
@@ -109,8 +109,8 @@
       "id": 4,
       "targets": [
         {
-          "datasource": { "type": "trino", "uid": "Trino Iceberg" },
-          "format": "table",
+          "datasource": { "type": "trino-datasource", "uid": "Trino Iceberg" },
+          "format": 0,
           "rawSql": "SELECT date_trunc('hour', event_timestamp) AS time, COUNT(*) AS tickets_count FROM iceberg.noc.tickets GROUP BY 1 ORDER BY 1",
           "refId": "A"
         }
@@ -142,8 +142,8 @@
       "id": 5,
       "targets": [
         {
-          "datasource": { "type": "trino", "uid": "Trino Iceberg" },
-          "format": "table",
+          "datasource": { "type": "trino-datasource", "uid": "Trino Iceberg" },
+          "format": 0,
           "rawSql": "SELECT event_id AS \"Ticket ID\", source AS \"Assigned Group\", severity_clean AS \"Priority\", event_timestamp AS \"Created Timestamp\" FROM iceberg.noc.tickets ORDER BY event_timestamp DESC LIMIT 50",
           "refId": "A"
         }

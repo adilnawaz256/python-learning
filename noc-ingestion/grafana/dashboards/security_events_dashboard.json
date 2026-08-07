@@ -14,8 +14,8 @@
       "id": 1,
       "targets": [
         {
-          "datasource": { "type": "trino", "uid": "Trino Iceberg" },
-          "format": "table",
+          "datasource": { "type": "trino-datasource", "uid": "Trino Iceberg" },
+          "format": 0,
           "rawSql": "SELECT COALESCE(COUNT(*), 0) AS total_threats FROM iceberg.noc.security_events",
           "refId": "A"
         }
@@ -46,8 +46,8 @@
       "id": 2,
       "targets": [
         {
-          "datasource": { "type": "trino", "uid": "Trino Iceberg" },
-          "format": "table",
+          "datasource": { "type": "trino-datasource", "uid": "Trino Iceberg" },
+          "format": 0,
           "rawSql": "SELECT severity_clean AS threat_level, COUNT(*) AS count FROM iceberg.noc.security_events GROUP BY severity_clean",
           "refId": "A"
         }
@@ -78,8 +78,8 @@
       "id": 3,
       "targets": [
         {
-          "datasource": { "type": "trino", "uid": "Trino Iceberg" },
-          "format": "table",
+          "datasource": { "type": "trino-datasource", "uid": "Trino Iceberg" },
+          "format": 0,
           "rawSql": "SELECT region, COUNT(*) AS count FROM iceberg.noc.security_events GROUP BY region",
           "refId": "A"
         }
@@ -109,8 +109,8 @@
       "id": 4,
       "targets": [
         {
-          "datasource": { "type": "trino", "uid": "Trino Iceberg" },
-          "format": "table",
+          "datasource": { "type": "trino-datasource", "uid": "Trino Iceberg" },
+          "format": 0,
           "rawSql": "SELECT date_trunc('hour', event_timestamp) AS time, COUNT(*) AS threat_count FROM iceberg.noc.security_events GROUP BY 1 ORDER BY 1",
           "refId": "A"
         }
@@ -142,8 +142,8 @@
       "id": 5,
       "targets": [
         {
-          "datasource": { "type": "trino", "uid": "Trino Iceberg" },
-          "format": "table",
+          "datasource": { "type": "trino-datasource", "uid": "Trino Iceberg" },
+          "format": 0,
           "rawSql": "SELECT event_id AS \"Event ID\", node_id AS \"Node ID\", region AS \"Region\", severity_clean AS \"Threat Level\", event_timestamp AS \"Event Timestamp\" FROM iceberg.noc.security_events ORDER BY event_timestamp DESC LIMIT 50",
           "refId": "A"
         }
