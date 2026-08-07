@@ -1,20 +1,32 @@
-# AWS EC2 Deployment & Validation Guide - Phase 2 Analytics Layer (Apache Iceberg, Trino & Grafana)
+# AWS EC2 Deployment & Validation Guide - Production Apache Iceberg REST Catalog, Trino & Grafana
 
-This guide provides step-by-step instructions for deploying and validating the **Analytics Layer** (Apache Iceberg, Apache Trino 435 SQL Engine, and Grafana Dashboards) on your AWS EC2 instance.
+This guide provides step-by-step instructions for deploying and validating the **Analytics Layer** (Apache Iceberg REST Catalog backed by PostgreSQL, Apache Trino 435 SQL Engine, and Grafana Dashboards) on your AWS EC2 instance.
 
 ---
 
-## 1. Corrected Trino 435 Iceberg Catalog Configuration (`trino/catalog/iceberg.properties`)
+## 1. Production Apache Iceberg REST Catalog (PostgreSQL-backed) & Trino 435 Configuration
 
+In production architectures, Apache Iceberg uses an open-standard **Iceberg REST Catalog** (`http://iceberg-rest:8181`) to coordinate table metadata atomically between Spark (Writer) and Trino 435 (Reader). The Iceberg REST service persists catalog table metadata in the existing PostgreSQL database (`noc-postgres`), ensuring catalog metadata survives container restarts.
+
+### `trino/catalog/iceberg.properties`:
 ```properties
 connector.name=iceberg
-iceberg.catalog.type=TESTING_FILE_SYSTEM
-iceberg.file-system-catalog.warehouse=s3://noc-raw-data/iceberg-warehouse
+iceberg.catalog.type=rest
+iceberg.rest-catalog.uri=http://iceberg-rest:8181
 fs.native-s3.enabled=true
 s3.endpoint=http://minio:9000
 s3.aws-access-key=minioadmin
 s3.aws-secret-key=minioadmin
 s3.path-style-access=true
+```
+
+### `spark/config/spark-defaults.conf`:
+```conf
+spark.sql.extensions                org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions
+spark.sql.catalog.iceberg           org.apache.iceberg.spark.SparkCatalog
+spark.sql.catalog.iceberg.type      rest
+spark.sql.catalog.iceberg.uri       http://iceberg-rest:8181
+spark.sql.catalog.iceberg.warehouse s3a://noc-raw-data/iceberg-warehouse
 ```
 
 ---
@@ -25,7 +37,7 @@ On your local development machine:
 
 ```bash
 git add .
-git commit -m "fix: Correct Trino 435 Iceberg catalog configuration"
+git commit -m "feat: Persistent PostgreSQL-backed Apache Iceberg REST catalog for Spark and Trino 435"
 git push origin main
 ```
 
@@ -49,7 +61,7 @@ docker-compose down
 docker-compose up -d --build
 ```
 
-Verify all 8 services are running and in the `Up` state:
+Verify all 9 services are running and in the `Up` state:
 
 ```bash
 docker-compose ps
@@ -60,23 +72,34 @@ You should see:
 2. `noc-mock-external-api` (Mock Monitoring REST API: 8001)
 3. `noc-kafka` (Apache Kafka Broker: 9092)
 4. `noc-minio` (MinIO Object Storage: 9000/9001)
-5. `noc-postgres` (PostgreSQL Audit DB: 5432)
+5. `noc-postgres` (PostgreSQL Audit & Iceberg Metadata DB: 5432)
 6. `noc-spark-master` & `noc-spark-worker` (Apache Spark Cluster: 8080/8081/7077)
-7. `noc-trino` (Apache Trino SQL Query Engine: 8082 - Status: Up)
-8. `noc-grafana` (Grafana Dashboards Engine: 3000)
+7. `noc-iceberg-rest` (PostgreSQL-backed Iceberg REST Catalog Server: 8181)
+8. `noc-trino` (Apache Trino SQL Query Engine: 8082)
+9. `noc-grafana` (Grafana Dashboards Engine: 3000)
 
 ---
 
 ## 3. Step-by-Step Runtime Validation on EC2
 
 ### Step A: Execute Spark Job to Populate Iceberg Tables
-Trigger the PySpark ETL job to process raw telemetry and populate the Apache Iceberg tables:
+Trigger the PySpark ETL job to process raw telemetry and populate the Apache Iceberg REST tables:
 
 ```bash
 docker exec -it noc-spark-master /opt/spark/bin/spark-submit /opt/spark/spark-apps/jobs/spark_processor.py
 ```
 
-### Step B: Verify Trino SQL Queries on Iceberg Tables
+Check Spark logs:
+Look for:
+- `Appended records to Iceberg table 'iceberg.noc.alarms'`
+- `Appended records to Iceberg table 'iceberg.noc.tickets'`
+- `Appended records to Iceberg table 'iceberg.noc.network_events'`
+- `Appended records to Iceberg table 'iceberg.noc.security_events'`
+- `Appended records to Iceberg table 'iceberg.noc.performance_metrics'`
+
+---
+
+### Step B: Verify Trino SQL Queries on Iceberg REST Tables
 Connect to the Trino container and query all 5 Apache Iceberg tables with standard SQL:
 
 ```bash
@@ -130,4 +153,4 @@ Access Grafana Web Console in your browser:
 - **Username**: `admin`
 - **Password**: `admin`
 
-Navigate to **Dashboards** > **NOC Analytics** folder to view the 5 live dashboards querying Apache Iceberg tables via Trino.
+Navigate to **Dashboards** > **NOC Analytics** folder to view the 5 live dashboards querying Apache Iceberg REST tables via Trino.
