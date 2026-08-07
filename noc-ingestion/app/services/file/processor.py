@@ -2,7 +2,7 @@ import io
 import json
 import pandas as pd
 import pypdf
-from typing import Tuple, Dict, Any, Optional
+from typing import Tuple, Dict, Any, Optional, List
 from app.core.exceptions import FileValidationError
 from app.core.logger import log_event, logger
 from app.schemas.file_schema import FileMetadata, SupportedFileType
@@ -11,7 +11,7 @@ from app.utils.validators import validate_file_extension, calculate_sha256, CONT
 
 
 class FileProcessorService:
-    """Service responsible for validating files, extracting metadata, and storing in MinIO."""
+    """Service responsible for validating files, extracting metadata, parsing into JSON records, and storing in MinIO."""
 
     def __init__(self, minio_service: Optional[MinIOService] = None):
         self.minio_service = minio_service or get_minio_service()
@@ -56,24 +56,53 @@ class FileProcessorService:
 
         return row_count, page_count, extra_details
 
+    def parse_file_to_json_records(self, content: bytes, file_type: SupportedFileType) -> List[Dict[str, Any]]:
+        """Parses CSV, Excel, or JSON contents into a list of Python dictionaries."""
+        try:
+            if file_type == SupportedFileType.CSV:
+                df = pd.read_csv(io.BytesIO(content))
+                df = df.where(pd.notnull(df), None)
+                return df.to_dict(orient="records")
+
+            elif file_type == SupportedFileType.EXCEL:
+                df = pd.read_excel(io.BytesIO(content), sheet_name=0)
+                df = df.where(pd.notnull(df), None)
+                return df.to_dict(orient="records")
+
+            elif file_type == SupportedFileType.JSON:
+                data = json.loads(content.decode("utf-8"))
+                if isinstance(data, list):
+                    return data
+                elif isinstance(data, dict):
+                    return [data]
+                return []
+
+            elif file_type == SupportedFileType.PDF:
+                pdf_reader = pypdf.PdfReader(io.BytesIO(content))
+                text_content = ""
+                for page in pdf_reader.pages:
+                    text_content += page.extract_text() or ""
+                return [{"document_type": "PDF", "page_count": len(pdf_reader.pages), "text_snippet": text_content[:500]}]
+
+        except Exception as e:
+            logger.error(f"Failed to parse file to JSON records: {e}")
+            return []
+        return []
+
     async def process_and_upload(self, content: bytes, filename: str) -> FileMetadata:
-        """Validates file, generates metadata, and stores into MinIO under raw/{type}/"""
+        """Validates file, generates metadata, and stores into MinIO under raw/uploads/{type}/"""
         ext, file_type = validate_file_extension(filename)
         file_size = len(content)
 
         if file_size == 0:
             raise FileValidationError(f"File '{filename}' is empty (0 bytes).")
 
-        # Extract internal metrics (rows, pages, etc.)
         row_count, page_count, extra_details = self.inspect_file(content, file_type)
         sha256_hash = calculate_sha256(content)
 
         content_type = CONTENT_TYPES.get(file_type, "application/octet-stream")
+        category = f"uploads/{file_type.value}"
 
-        # Category for MinIO object path
-        category = file_type.value
-
-        # Async upload to MinIO
         minio_path = await self.minio_service.async_upload_bytes(
             data=content,
             category=category,

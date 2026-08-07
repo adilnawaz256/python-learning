@@ -20,7 +20,7 @@ async def test_csv_upload(async_client, mock_minio_service):
     assert data["data"]["original_filename"] == "network_status.csv"
     assert data["data"]["file_type"] == "csv"
     assert data["data"]["row_count"] == 2
-    assert "raw/csv/" in data["data"]["minio_path"]
+    assert "csv/" in data["data"]["minio_path"]
 
 
 @pytest.mark.asyncio

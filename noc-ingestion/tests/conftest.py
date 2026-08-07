@@ -2,7 +2,16 @@ import pytest
 import pytest_asyncio
 from httpx import AsyncClient, ASGITransport
 from app.main import app
+from app.database.session import get_db_session
 from app.services.storage.minio.client import MinIOService
+
+
+async def mock_get_db_session():
+    """Mock database session dependency yielding None when PostgreSQL is offline in test mode."""
+    yield None
+
+
+app.dependency_overrides[get_db_session] = mock_get_db_session
 
 
 @pytest.fixture

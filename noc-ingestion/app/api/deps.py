@@ -4,6 +4,7 @@ from app.config.config import Settings, get_settings
 from app.services.storage.minio.client import MinIOService, get_minio_service
 from app.services.file.processor import FileProcessorService
 from app.services.rest.collector import RESTCollectorService
+from app.services.rest.connector import RESTConnectorScheduler
 from app.services.kafka.consumer import KafkaConsumerService
 from app.services.kafka.simulator import KafkaSimulatorService
 from app.demo.scheduler import DemoScheduler
@@ -12,6 +13,7 @@ from app.demo.scheduler import DemoScheduler
 # Global shared instances
 _global_kafka_consumer: KafkaConsumerService = KafkaConsumerService()
 _global_demo_scheduler: DemoScheduler = DemoScheduler(consumer_service=_global_kafka_consumer)
+_global_rest_connector: RESTConnectorScheduler = RESTConnectorScheduler(consumer_service=_global_kafka_consumer)
 
 
 def get_minio() -> MinIOService:
@@ -36,6 +38,10 @@ def get_kafka_simulator(consumer: KafkaConsumerService = Depends(get_kafka_consu
 
 def get_demo_scheduler() -> DemoScheduler:
     return _global_demo_scheduler
+
+
+def get_rest_connector() -> RESTConnectorScheduler:
+    return _global_rest_connector
 
 
 def verify_api_token(

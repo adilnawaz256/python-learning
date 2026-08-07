@@ -1,4 +1,5 @@
 import json
+import random
 import asyncio
 from datetime import datetime, timezone
 from typing import Optional
@@ -11,7 +12,7 @@ from app.services.kafka.consumer import KafkaConsumerService
 
 
 class DemoKafkaProducer:
-    """Demo Kafka Producer that publishes realistic Comarch OSS telecom alarms every 5 seconds."""
+    """Demo Kafka Producer publishing continuous realistic telecom events across topics."""
 
     def __init__(self, consumer_service: Optional[KafkaConsumerService] = None):
         self.settings = get_settings()
@@ -33,7 +34,7 @@ class DemoKafkaProducer:
             await self.producer.start()
             logger.info(f"Demo Kafka Producer connected to {self.settings.KAFKA_BOOTSTRAP_SERVERS}")
         except Exception as e:
-            logger.warning(f"Demo Kafka Producer running in local simulation pipeline mode (No external Kafka broker required): {e}")
+            logger.warning(f"Demo Kafka Producer running in local simulation pipeline mode: {e}")
             self.producer = None
 
         self._is_running = True
@@ -50,11 +51,10 @@ class DemoKafkaProducer:
             logger.info("Demo Kafka Producer stopped gracefully.")
 
     async def produce_single_demo_event(self) -> dict:
-        """Generates 1 realistic Comarch OSS alarm event and ingests it."""
+        """Generates 1 realistic Comarch OSS alarm event and publishes to telecom-events topic."""
         alarms = DemoDataGenerator.generate_alarms(count=1)
         alarm = alarms[0]
 
-        # Format as KafkaIngestionMessage schema payload
         kafka_message = {
             "event_id": alarm["alarmId"],
             "source": "Comarch OSS",
@@ -73,19 +73,41 @@ class DemoKafkaProducer:
             },
         }
 
-        # 1. Publish to real Kafka broker if connected
+        # 1. Publish to main telecom-events topic
         if self.producer:
             try:
                 await self.producer.send_and_wait(self.settings.KAFKA_TOPIC, value=kafka_message)
             except Exception as pe:
                 logger.error(f"Kafka producer error: {pe}")
 
-        # 2. Feed into ingestion pipeline so raw data lands into MinIO raw/kafka/
+        # 2. Feed into consumer pipeline for MinIO storage
         if self.consumer_service:
             try:
-                await self.consumer_service.process_single_message(kafka_message)
+                await self.consumer_service.process_single_message(kafka_message, topic=self.settings.KAFKA_TOPIC)
             except Exception as ie:
                 logger.error(f"Demo Kafka ingestion pipeline error: {ie}")
+
+        # 3. Rotate publishing to specialized multi-topics
+        multi_topic_choice = random.choice([
+            (self.settings.KAFKA_TOPIC_ALARMS, "alarms"),
+            (self.settings.KAFKA_TOPIC_TICKETS, "tickets"),
+            (self.settings.KAFKA_TOPIC_NETWORK, "network"),
+            (self.settings.KAFKA_TOPIC_SECURITY, "security"),
+            (self.settings.KAFKA_TOPIC_PERFORMANCE, "performance"),
+        ])
+        target_topic, cat = multi_topic_choice
+
+        if self.producer:
+            try:
+                await self.producer.send_and_wait(target_topic, value=kafka_message)
+            except Exception:
+                pass
+
+        if self.consumer_service:
+            try:
+                await self.consumer_service.process_single_message(kafka_message, topic=target_topic, category=f"kafka/{cat}")
+            except Exception:
+                pass
 
         log_event(
             event_type="Demo Kafka Event Produced",
@@ -95,6 +117,7 @@ class DemoKafkaProducer:
                 "towerId": alarm["towerId"],
                 "severity": alarm["severity"],
                 "vendor": alarm["vendor"],
+                "target_topic": target_topic,
             },
         )
         return kafka_message

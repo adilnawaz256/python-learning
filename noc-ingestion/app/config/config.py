@@ -29,12 +29,19 @@ class Settings(BaseSettings):
     # Kafka
     KAFKA_BOOTSTRAP_SERVERS: str = "localhost:9092"
     KAFKA_TOPIC: str = "telecom-events"
+    KAFKA_TOPIC_ALARMS: str = "telecom-alarms"
+    KAFKA_TOPIC_TICKETS: str = "tickets"
+    KAFKA_TOPIC_NETWORK: str = "network-events"
+    KAFKA_TOPIC_SECURITY: str = "security-events"
+    KAFKA_TOPIC_PERFORMANCE: str = "performance"
     KAFKA_GROUP_ID: str = "noc-ingestion-group"
     KAFKA_AUTO_OFFSET_RESET: str = "earliest"
 
-    # REST Collector
+    # REST Collector & Connector
     DEFAULT_REST_TIMEOUT_SECONDS: int = 30
     DEFAULT_MAX_RETRIES: int = 3
+    MOCK_EXTERNAL_API_URL: str = "http://localhost:8001"
+    REST_POLL_INTERVAL_SECONDS: int = 60
 
     # Database
     POSTGRES_USER: str = "postgres"
