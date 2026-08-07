@@ -111,7 +111,7 @@ services:
 
   # 5. Apache Spark Master
   spark-master:
-    image: spark:3.5.1-python3
+    image: noc-spark-custom:3.5.1
     container_name: noc-spark-master
     hostname: spark-master
     entrypoint: ["/opt/spark/spark-apps/entrypoint.sh"]
@@ -148,7 +148,7 @@ services:
 
   # 6. Apache Spark Worker
   spark-worker:
-    image: spark:3.5.1-python3
+    image: noc-spark-custom:3.5.1
     container_name: noc-spark-worker
     entrypoint: ["/opt/spark/spark-apps/entrypoint.sh"]
     command:

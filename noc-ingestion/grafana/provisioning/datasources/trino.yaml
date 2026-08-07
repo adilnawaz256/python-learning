@@ -2,11 +2,12 @@ apiVersion: 1
 
 datasources:
   - name: Trino Iceberg
-    type: trino
+    type: trino-datasource
     access: proxy
     url: http://noc-trino:8080
     isDefault: true
     editable: true
+
     jsonData:
       catalog: iceberg
       schema: noc
