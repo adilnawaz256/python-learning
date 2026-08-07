@@ -4,29 +4,24 @@ This guide provides step-by-step instructions for deploying and validating the *
 
 ---
 
-## 1. Production Apache Iceberg REST Catalog (PostgreSQL-backed) & Trino 435 Configuration
+## 1. Spark Container Fix & Production Configuration
 
-In production architectures, Apache Iceberg uses an open-standard **Iceberg REST Catalog** (`http://iceberg-rest:8181`) to coordinate table metadata atomically between Spark (Writer) and Trino 435 (Reader). The Iceberg REST service persists catalog table metadata in the existing PostgreSQL database (`noc-postgres`), ensuring catalog metadata survives container restarts.
+- **Spark Custom Dockerfile (`spark/Dockerfile`)**: Creates `/home/spark` and `/tmp/.ivy2` with write permissions for non-root `spark` user (UID 185), enabling `spark-submit` to download Maven dependencies (`iceberg-spark-runtime`, `hadoop-aws`, `spark-excel`).
+- **Spark Ivy Cache Configuration (`spark/config/spark-defaults.conf`)**: Configured `spark.jars.ivy /tmp/.ivy2` and REST catalog URI `http://iceberg-rest:8181`.
 
-### `trino/catalog/iceberg.properties`:
-```properties
-connector.name=iceberg
-iceberg.catalog.type=rest
-iceberg.rest-catalog.uri=http://iceberg-rest:8181
-fs.native-s3.enabled=true
-s3.endpoint=http://minio:9000
-s3.aws-access-key=minioadmin
-s3.aws-secret-key=minioadmin
-s3.path-style-access=true
-```
+### `spark/Dockerfile`:
+```dockerfile
+FROM spark:3.5.1-python3
 
-### `spark/config/spark-defaults.conf`:
-```conf
-spark.sql.extensions                org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions
-spark.sql.catalog.iceberg           org.apache.iceberg.spark.SparkCatalog
-spark.sql.catalog.iceberg.type      rest
-spark.sql.catalog.iceberg.uri       http://iceberg-rest:8181
-spark.sql.catalog.iceberg.warehouse s3a://noc-raw-data/iceberg-warehouse
+USER root
+
+RUN mkdir -p /home/spark/.ivy2/cache /tmp/.ivy2 /opt/spark/work-dir && \
+    chown -R 185:0 /home/spark /tmp/.ivy2 /opt/spark/work-dir && \
+    chmod -R 777 /home/spark /tmp/.ivy2 /opt/spark/work-dir
+
+ENV HOME=/home/spark
+
+USER 185
 ```
 
 ---
@@ -37,7 +32,7 @@ On your local development machine:
 
 ```bash
 git add .
-git commit -m "feat: Persistent PostgreSQL-backed Apache Iceberg REST catalog for Spark and Trino 435"
+git commit -m "fix: Custom Spark Dockerfile with writable HOME and Ivy cache directory"
 git push origin main
 ```
 

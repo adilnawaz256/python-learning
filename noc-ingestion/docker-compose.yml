@@ -111,16 +111,21 @@ services:
 
   # 5. Apache Spark Master
   spark-master:
-    image: spark:3.5.1-python3
+    build:
+      context: ./spark
+      dockerfile: Dockerfile
+    image: noc-spark-custom:3.5.1
     container_name: noc-spark-master
     hostname: spark-master
     command: /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master
     environment:
       - SPARK_NO_DAEMONIZE=true
+      - HOME=/home/spark
       - MINIO_ENDPOINT_URL=http://minio:9000
       - MINIO_ACCESS_KEY=minioadmin
       - MINIO_SECRET_KEY=minioadmin
       - MINIO_BUCKET=noc-raw-data
+      - ICEBERG_REST_URI=http://iceberg-rest:8181
     ports:
       - "8080:8080"
       - "7077:7077"
@@ -142,7 +147,10 @@ services:
 
   # 6. Apache Spark Worker
   spark-worker:
-    image: spark:3.5.1-python3
+    build:
+      context: ./spark
+      dockerfile: Dockerfile
+    image: noc-spark-custom:3.5.1
     container_name: noc-spark-worker
     command: /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
     environment:
@@ -150,10 +158,12 @@ services:
       - SPARK_WORKER_WEBUI_PORT=8081
       - SPARK_WORKER_MEMORY=2g
       - SPARK_WORKER_CORES=2
+      - HOME=/home/spark
       - MINIO_ENDPOINT_URL=http://minio:9000
       - MINIO_ACCESS_KEY=minioadmin
       - MINIO_SECRET_KEY=minioadmin
       - MINIO_BUCKET=noc-raw-data
+      - ICEBERG_REST_URI=http://iceberg-rest:8181
     ports:
       - "8081:8081"
     volumes:
