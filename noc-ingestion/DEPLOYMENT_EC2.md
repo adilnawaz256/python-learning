@@ -9,7 +9,7 @@ This guide provides step-by-step instructions for deploying and validating the *
 The platform uses official `spark:3.5.1-python3` Docker images directly without requiring `docker compose build`.
 
 - **Writable HOME & Ivy Cache**: Configured `HOME=/tmp` environment variable and `command: bash -c "mkdir -p /tmp/.ivy2/cache && ..."` in `docker-compose.yml`.
-- **Ivy Configuration (`spark/config/spark-defaults.conf`)**: Configured `spark.jars.ivy /tmp/.ivy2` for Maven dependency downloads (`hadoop-aws`, `iceberg-spark-runtime-3.5_2.12`, `spark-excel_2.12`).
+- **Ivy Configuration (`spark/config/spark-defaults.conf`)**: Configured `spark.jars.ivy /tmp/.ivy2` for Maven dependency downloads (`hadoop-aws`, `iceberg-spark-runtime-3.5_2.12`).
 
 ---
 
