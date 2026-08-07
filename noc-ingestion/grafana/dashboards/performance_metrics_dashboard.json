@@ -8,15 +8,28 @@
   "liveNow": false,
   "panels": [
     {
-      "title": "Total Performance Metric Records",
+      "title": "Total Metric Telemetry Records",
       "type": "stat",
-      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 0 },
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 0 },
       "id": 1,
       "targets": [
         {
           "datasource": { "type": "trino", "uid": "Trino Iceberg" },
-          "rawSql": "SELECT COUNT(*) as total_metrics FROM iceberg.noc.performance_metrics",
-          "refId": "A"
+          "rawSql": "SELECT COALESCE(COUNT(*), 0) AS total_metrics FROM iceberg.noc.performance_metrics",
+          "refId": "Total_Metrics"
+        }
+      ]
+    },
+    {
+      "title": "Metrics by Severity Level",
+      "type": "piechart",
+      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 0 },
+      "id": 2,
+      "targets": [
+        {
+          "datasource": { "type": "trino", "uid": "Trino Iceberg" },
+          "rawSql": "SELECT severity_clean AS severity, COUNT(*) AS count FROM iceberg.noc.performance_metrics GROUP BY severity_clean",
+          "refId": "Metrics_Severity"
         }
       ]
     },
@@ -24,25 +37,38 @@
       "title": "Monitored Devices by Region",
       "type": "barchart",
       "gridPos": { "h": 6, "w": 12, "x": 12, "y": 0 },
-      "id": 2,
-      "targets": [
-        {
-          "datasource": { "type": "trino", "uid": "Trino Iceberg" },
-          "rawSql": "SELECT region, COUNT(*) as count FROM iceberg.noc.performance_metrics GROUP BY region",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "title": "Performance KPI Telemetry Table",
-      "type": "table",
-      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 6 },
       "id": 3,
       "targets": [
         {
           "datasource": { "type": "trino", "uid": "Trino Iceberg" },
+          "rawSql": "SELECT region, COUNT(*) AS count FROM iceberg.noc.performance_metrics GROUP BY region",
+          "refId": "Metrics_Region"
+        }
+      ]
+    },
+    {
+      "title": "Metrics Trend Over Time",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 6 },
+      "id": 4,
+      "targets": [
+        {
+          "datasource": { "type": "trino", "uid": "Trino Iceberg" },
+          "rawSql": "SELECT date_trunc('hour', event_timestamp) AS time, COUNT(*) AS metric_count FROM iceberg.noc.performance_metrics GROUP BY 1 ORDER BY 1",
+          "refId": "Metrics_Trend"
+        }
+      ]
+    },
+    {
+      "title": "Recent Performance Metrics Log",
+      "type": "table",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 14 },
+      "id": 5,
+      "targets": [
+        {
+          "datasource": { "type": "trino", "uid": "Trino Iceberg" },
           "rawSql": "SELECT event_id, node_id, region, severity_clean, event_timestamp FROM iceberg.noc.performance_metrics ORDER BY event_timestamp DESC LIMIT 50",
-          "refId": "A"
+          "refId": "Metrics_Log"
         }
       ]
     }
@@ -51,7 +77,7 @@
   "schemaVersion": 38,
   "style": "dark",
   "tags": ["noc", "performance", "iceberg"],
-  "time": { "from": "now-6h", "to": "now" },
+  "time": { "from": "now-24h", "to": "now" },
   "title": "NOC Performance Metrics Dashboard",
   "uid": "noc-performance-metrics-dashboard"
 }

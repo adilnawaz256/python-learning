@@ -10,52 +10,78 @@
     {
       "title": "Total Active Alarms",
       "type": "stat",
-      "gridPos": { "h": 6, "w": 8, "x": 0, "y": 0 },
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 0 },
       "id": 1,
       "targets": [
         {
           "datasource": { "type": "trino", "uid": "Trino Iceberg" },
-          "rawSql": "SELECT COUNT(*) as total_alarms FROM iceberg.noc.alarms",
-          "refId": "A"
+          "rawSql": "SELECT COALESCE(COUNT(*), 0) AS total_alarms FROM iceberg.noc.alarms",
+          "refId": "Total_Alarms"
         }
       ]
     },
     {
       "title": "Alarms by Severity",
       "type": "piechart",
-      "gridPos": { "h": 6, "w": 8, "x": 8, "y": 0 },
+      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 0 },
       "id": 2,
       "targets": [
         {
           "datasource": { "type": "trino", "uid": "Trino Iceberg" },
-          "rawSql": "SELECT severity_clean, COUNT(*) as count FROM iceberg.noc.alarms GROUP BY severity_clean",
-          "refId": "A"
+          "rawSql": "SELECT severity_clean AS severity, COUNT(*) AS count FROM iceberg.noc.alarms GROUP BY severity_clean",
+          "refId": "Alarms_Severity"
         }
       ]
     },
     {
       "title": "Alarms by Vendor",
       "type": "barchart",
-      "gridPos": { "h": 6, "w": 8, "x": 16, "y": 0 },
+      "gridPos": { "h": 6, "w": 6, "x": 12, "y": 0 },
       "id": 3,
       "targets": [
         {
           "datasource": { "type": "trino", "uid": "Trino Iceberg" },
-          "rawSql": "SELECT vendor, COUNT(*) as count FROM iceberg.noc.alarms GROUP BY vendor",
-          "refId": "A"
+          "rawSql": "SELECT vendor, COUNT(*) AS count FROM iceberg.noc.alarms GROUP BY vendor",
+          "refId": "Alarms_Vendor"
+        }
+      ]
+    },
+    {
+      "title": "Alarms by Region",
+      "type": "barchart",
+      "gridPos": { "h": 6, "w": 6, "x": 18, "y": 0 },
+      "id": 4,
+      "targets": [
+        {
+          "datasource": { "type": "trino", "uid": "Trino Iceberg" },
+          "rawSql": "SELECT region, COUNT(*) AS count FROM iceberg.noc.alarms GROUP BY region",
+          "refId": "Alarms_Region"
+        }
+      ]
+    },
+    {
+      "title": "Alarm Trend Over Time",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 6 },
+      "id": 5,
+      "targets": [
+        {
+          "datasource": { "type": "trino", "uid": "Trino Iceberg" },
+          "rawSql": "SELECT date_trunc('hour', event_timestamp) AS time, COUNT(*) AS alarms_count FROM iceberg.noc.alarms GROUP BY 1 ORDER BY 1",
+          "refId": "Alarms_Trend"
         }
       ]
     },
     {
       "title": "Recent Alarm Events Log",
       "type": "table",
-      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 6 },
-      "id": 4,
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 14 },
+      "id": 6,
       "targets": [
         {
           "datasource": { "type": "trino", "uid": "Trino Iceberg" },
           "rawSql": "SELECT event_id, node_id, region, vendor, severity_clean, event_timestamp FROM iceberg.noc.alarms ORDER BY event_timestamp DESC LIMIT 50",
-          "refId": "A"
+          "refId": "Alarm_Log"
         }
       ]
     }
@@ -64,7 +90,7 @@
   "schemaVersion": 38,
   "style": "dark",
   "tags": ["noc", "alarms", "iceberg"],
-  "time": { "from": "now-6h", "to": "now" },
+  "time": { "from": "now-24h", "to": "now" },
   "title": "NOC Alarms Analytics Dashboard",
   "uid": "noc-alarms-dashboard"
 }

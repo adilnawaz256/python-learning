@@ -15,34 +15,60 @@
       "targets": [
         {
           "datasource": { "type": "trino", "uid": "Trino Iceberg" },
-          "rawSql": "SELECT COUNT(*) as total_events FROM iceberg.noc.network_events",
-          "refId": "A"
+          "rawSql": "SELECT COALESCE(COUNT(*), 0) AS total_events FROM iceberg.noc.network_events",
+          "refId": "Total_Network_Events"
         }
       ]
     },
     {
-      "title": "Network Events by Region",
-      "type": "barchart",
-      "gridPos": { "h": 6, "w": 16, "x": 8, "y": 0 },
+      "title": "Events by Severity",
+      "type": "piechart",
+      "gridPos": { "h": 6, "w": 8, "x": 8, "y": 0 },
       "id": 2,
       "targets": [
         {
           "datasource": { "type": "trino", "uid": "Trino Iceberg" },
-          "rawSql": "SELECT region, COUNT(*) as count FROM iceberg.noc.network_events GROUP BY region",
-          "refId": "A"
+          "rawSql": "SELECT severity_clean AS severity, COUNT(*) AS count FROM iceberg.noc.network_events GROUP BY severity_clean",
+          "refId": "Network_Severity"
         }
       ]
     },
     {
-      "title": "Network KPI & Outage Log",
-      "type": "table",
-      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 6 },
+      "title": "Events by Region",
+      "type": "barchart",
+      "gridPos": { "h": 6, "w": 8, "x": 16, "y": 0 },
       "id": 3,
       "targets": [
         {
           "datasource": { "type": "trino", "uid": "Trino Iceberg" },
+          "rawSql": "SELECT region, COUNT(*) AS count FROM iceberg.noc.network_events GROUP BY region",
+          "refId": "Network_Region"
+        }
+      ]
+    },
+    {
+      "title": "Network Events Trend",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 6 },
+      "id": 4,
+      "targets": [
+        {
+          "datasource": { "type": "trino", "uid": "Trino Iceberg" },
+          "rawSql": "SELECT date_trunc('hour', event_timestamp) AS time, COUNT(*) AS events_count FROM iceberg.noc.network_events GROUP BY 1 ORDER BY 1",
+          "refId": "Network_Trend"
+        }
+      ]
+    },
+    {
+      "title": "Recent Network Events Log",
+      "type": "table",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 14 },
+      "id": 5,
+      "targets": [
+        {
+          "datasource": { "type": "trino", "uid": "Trino Iceberg" },
           "rawSql": "SELECT event_id, node_id, region, severity_clean, event_timestamp FROM iceberg.noc.network_events ORDER BY event_timestamp DESC LIMIT 50",
-          "refId": "A"
+          "refId": "Network_Log"
         }
       ]
     }
@@ -51,7 +77,7 @@
   "schemaVersion": 38,
   "style": "dark",
   "tags": ["noc", "network", "iceberg"],
-  "time": { "from": "now-6h", "to": "now" },
+  "time": { "from": "now-24h", "to": "now" },
   "title": "NOC Network Events Dashboard",
   "uid": "noc-network-events-dashboard"
 }
