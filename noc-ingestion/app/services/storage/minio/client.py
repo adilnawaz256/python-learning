@@ -1,5 +1,6 @@
 import io
 import json
+import uuid
 from datetime import datetime, timezone
 from functools import lru_cache
 from typing import Optional, Dict, Any, Union
@@ -76,15 +77,17 @@ class MinIOService:
             raise StorageError(f"Failed to ensure bucket {bucket_name}: {err}")
 
     def generate_object_path(self, category: str, filename_or_prefix: str) -> str:
-        """Generates structured key path: raw/{category}/{YYYY}/{MM}/{DD}/{timestamp}_{filename}"""
+        """Generates structured key path: raw/{category}/{YYYY}/{MM}/{DD}/{timestamp}_{uuid}_{filename}"""
         now = datetime.now(timezone.utc)
         timestamp_str = now.strftime("%Y%m%d_%H%M%S_%f")
         date_path = now.strftime("%Y/%m/%d")
-        
-        # Clean category
-        category = category.lower().strip()
-        
-        return f"raw/{category}/{date_path}/{timestamp_str}_{filename_or_prefix}"
+        unique_id = uuid.uuid4().hex[:8]
+
+        # Clean category and filename (strip slashes)
+        category_clean = category.lower().strip().strip("/")
+        filename_clean = filename_or_prefix.strip("/")
+
+        return f"raw/{category_clean}/{date_path}/{timestamp_str}_{unique_id}_{filename_clean}"
 
     def upload_bytes(
         self,
