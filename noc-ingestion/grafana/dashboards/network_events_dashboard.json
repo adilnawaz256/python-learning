@@ -27,7 +27,8 @@
           "fields": ""
         },
         "orientation": "auto",
-        "textMode": "auto",
+        "textMode": "value",
+        "graphMode": "none",
         "wideLayout": true
       },
       "fieldConfig": {
@@ -61,7 +62,8 @@
         "legend": {
           "displayMode": "list",
           "placement": "right",
-          "showLegend": true
+          "showLegend": true,
+          "values": ["value"]
         }
       },
       "fieldConfig": {
@@ -84,6 +86,9 @@
       ],
       "options": {
         "xTickLabelRotation": 0,
+        "orientation": "auto",
+        "showValue": "auto",
+        "groupWidth": 0.7,
         "legend": {
           "displayMode": "list",
           "placement": "bottom",
