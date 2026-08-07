@@ -1,0 +1,57 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "title": "Total Security Threat Events",
+      "type": "stat",
+      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 0 },
+      "id": 1,
+      "targets": [
+        {
+          "datasource": { "type": "trinodb-trino-datasource", "uid": "Trino Iceberg" },
+          "rawSql": "SELECT COUNT(*) as total_threats FROM iceberg.noc.security_events",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Threat Level Distribution",
+      "type": "piechart",
+      "gridPos": { "h": 6, "w": 12, "x": 12, "y": 0 },
+      "id": 2,
+      "targets": [
+        {
+          "datasource": { "type": "trinodb-trino-datasource", "uid": "Trino Iceberg" },
+          "rawSql": "SELECT severity_clean as threat_level, COUNT(*) as count FROM iceberg.noc.security_events GROUP BY severity_clean",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Security Threat Events Log",
+      "type": "table",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 6 },
+      "id": 3,
+      "targets": [
+        {
+          "datasource": { "type": "trinodb-trino-datasource", "uid": "Trino Iceberg" },
+          "rawSql": "SELECT event_id, node_id, region, severity_clean, event_timestamp FROM iceberg.noc.security_events ORDER BY event_timestamp DESC LIMIT 50",
+          "refId": "A"
+        }
+      ]
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["noc", "security", "iceberg"],
+  "time": { "from": "now-6h", "to": "now" },
+  "title": "NOC Security Threat Events Dashboard",
+  "uid": "noc-security-events-dashboard"
+}

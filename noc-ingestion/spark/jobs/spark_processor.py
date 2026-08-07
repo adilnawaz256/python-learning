@@ -21,7 +21,7 @@ logger = logging.getLogger("NOC-Spark-ETL-Processor")
 
 
 def create_spark_session() -> SparkSession:
-    """Initializes SparkSession configured for MinIO S3A storage and Parquet output."""
+    """Initializes SparkSession configured for MinIO S3A storage and Apache Iceberg catalog."""
     builder = (
         SparkSession.builder.appName("NOC-Spark-ETL-Processor")
         .config("spark.hadoop.fs.s3a.endpoint", os.getenv("MINIO_ENDPOINT_URL", "http://minio:9000"))
@@ -32,9 +32,20 @@ def create_spark_session() -> SparkSession:
         .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
         .config("spark.hadoop.fs.s3a.aws.credentials.provider", "org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider")
         .config("spark.sql.parquet.compression.codec", "snappy")
+        .config("spark.sql.extensions", "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions")
+        .config("spark.sql.catalog.iceberg", "org.apache.iceberg.spark.SparkCatalog")
+        .config("spark.sql.catalog.iceberg.type", "hadoop")
+        .config("spark.sql.catalog.iceberg.warehouse", f"s3a://{os.getenv('MINIO_BUCKET', 'noc-raw-data')}/iceberg-warehouse")
     )
     spark = builder.getOrCreate()
     spark.sparkContext.setLogLevel("WARN")
+
+    # Create namespace schema 'noc' inside Iceberg catalog
+    try:
+        spark.sql("CREATE NAMESPACE IF NOT EXISTS iceberg.noc")
+    except Exception as e:
+        logger.info(f"Namespace setup info: {e}")
+
     return spark
 
 
@@ -80,12 +91,12 @@ def normalize_and_clean_dataframe(df):
     return df
 
 
-def process_and_convert_to_parquet(spark: SparkSession, s3_input_path: str, category: str, file_format: str = "json") -> None:
-    """Reads raw JSON/CSV/Excel dataset from MinIO, cleans & normalizes it, and writes partitioned Parquet output."""
+def process_category(spark: SparkSession, s3_input_path: str, category: str, iceberg_table_name: str, file_format: str = "json") -> None:
+    """Reads raw telemetry, cleans & normalizes, and appends to Apache Iceberg catalog table + Parquet landing zone."""
     bucket_name = os.getenv("MINIO_BUCKET", "noc-raw-data")
     target_parquet_path = f"s3a://{bucket_name}/processed/parquet/{category}/"
 
-    logger.info(f"Reading raw data from: {s3_input_path}")
+    logger.info(f"Reading raw data for category '{category}' from: {s3_input_path}")
     try:
         if file_format == "json":
             df = spark.read.option("multiline", "true").json(s3_input_path)
@@ -103,11 +114,21 @@ def process_and_convert_to_parquet(spark: SparkSession, s3_input_path: str, cate
         cleaned_df = normalize_and_clean_dataframe(df)
         row_count_after = cleaned_df.count()
 
-        logger.info(f"Category '{category}': Ingested {row_count_before} rows -> Deduplicated to {row_count_after} rows.")
+        logger.info(f"Category '{category}': Ingested {row_count_before} rows -> Cleaned to {row_count_after} rows.")
 
-        # Write clean Parquet file ready for Iceberg external table creation
+        # 1. Write to Parquet landing zone
         cleaned_df.write.mode("append").partitionBy("event_date").parquet(target_parquet_path)
-        logger.info(f" Successfully wrote clean Parquet files to {target_parquet_path}")
+        logger.info(f" Wrote clean Parquet files to {target_parquet_path}")
+
+        # 2. Write directly into Apache Iceberg table
+        full_iceberg_target = f"iceberg.noc.{iceberg_table_name}"
+        try:
+            cleaned_df.writeTo(full_iceberg_target).tableProperty("write.format.default", "parquet").append()
+            logger.info(f" Appended records to Iceberg table '{full_iceberg_target}'")
+        except Exception:
+            # Fallback table creation if not existing
+            cleaned_df.writeTo(full_iceberg_target).tableProperty("write.format.default", "parquet").create()
+            logger.info(f" Created and populated Iceberg table '{full_iceberg_target}'")
 
     except AnalysisException as ae:
         if "Path does not exist" in str(ae) or "No files found" in str(ae):
@@ -120,26 +141,31 @@ def process_and_convert_to_parquet(spark: SparkSession, s3_input_path: str, cate
 
 def main():
     start_time = time.time()
-    logger.info("Initializing Spark NOC ETL Pipeline...")
+    logger.info("Initializing Spark NOC ETL Engine for Iceberg Tables...")
     spark = create_spark_session()
 
     bucket_name = os.getenv("MINIO_BUCKET", "noc-raw-data")
     base_s3_uri = f"s3a://{bucket_name}"
 
-    # Ingestion Sources to process
+    # Ingestion Sources mapped to Apache Iceberg tables:
+    # 1. alarms -> iceberg.noc.alarms
+    # 2. tickets -> iceberg.noc.tickets
+    # 3. network -> iceberg.noc.network_events
+    # 4. security -> iceberg.noc.security_events
+    # 5. performance -> iceberg.noc.performance_metrics
     sources = [
-        (f"{base_s3_uri}/raw/kafka/alarms/*/*/*/*", "alarms", "json"),
-        (f"{base_s3_uri}/raw/kafka/tickets/*/*/*/*", "tickets", "json"),
-        (f"{base_s3_uri}/raw/kafka/network/*/*/*/*", "network", "json"),
-        (f"{base_s3_uri}/raw/kafka/security/*/*/*/*", "security", "json"),
-        (f"{base_s3_uri}/raw/kafka/performance/*/*/*/*", "performance", "json"),
-        (f"{base_s3_uri}/raw/rest/*/*/*/*", "rest", "json"),
-        (f"{base_s3_uri}/raw/uploads/csv/*/*/*/*", "uploads_csv", "csv"),
-        (f"{base_s3_uri}/raw/uploads/json/*/*/*/*", "uploads_json", "json"),
+        (f"{base_s3_uri}/raw/kafka/alarms/*/*/*/*", "alarms", "alarms", "json"),
+        (f"{base_s3_uri}/raw/kafka/tickets/*/*/*/*", "tickets", "tickets", "json"),
+        (f"{base_s3_uri}/raw/kafka/network/*/*/*/*", "network", "network_events", "json"),
+        (f"{base_s3_uri}/raw/kafka/security/*/*/*/*", "security", "security_events", "json"),
+        (f"{base_s3_uri}/raw/kafka/performance/*/*/*/*", "performance", "performance_metrics", "json"),
+        (f"{base_s3_uri}/raw/rest/*/*/*/*", "rest", "network_events", "json"),
+        (f"{base_s3_uri}/raw/uploads/csv/*/*/*/*", "uploads_csv", "network_events", "csv"),
+        (f"{base_s3_uri}/raw/uploads/json/*/*/*/*", "uploads_json", "network_events", "json"),
     ]
 
-    for input_path, category, fmt in sources:
-        process_and_convert_to_parquet(spark, input_path, category, fmt)
+    for input_path, category, iceberg_table, fmt in sources:
+        process_category(spark, input_path, category, iceberg_table, fmt)
 
     exec_time = round(time.time() - start_time, 2)
     logger.info(f"🎉 Spark NOC ETL Ingestion finished in {exec_time}s.")

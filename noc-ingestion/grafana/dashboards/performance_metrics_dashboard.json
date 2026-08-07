@@ -1,0 +1,57 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "title": "Total Performance Metric Records",
+      "type": "stat",
+      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 0 },
+      "id": 1,
+      "targets": [
+        {
+          "datasource": { "type": "trinodb-trino-datasource", "uid": "Trino Iceberg" },
+          "rawSql": "SELECT COUNT(*) as total_metrics FROM iceberg.noc.performance_metrics",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Monitored Devices by Region",
+      "type": "barchart",
+      "gridPos": { "h": 6, "w": 12, "x": 12, "y": 0 },
+      "id": 2,
+      "targets": [
+        {
+          "datasource": { "type": "trinodb-trino-datasource", "uid": "Trino Iceberg" },
+          "rawSql": "SELECT region, COUNT(*) as count FROM iceberg.noc.performance_metrics GROUP BY region",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Performance KPI Telemetry Table",
+      "type": "table",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 6 },
+      "id": 3,
+      "targets": [
+        {
+          "datasource": { "type": "trinodb-trino-datasource", "uid": "Trino Iceberg" },
+          "rawSql": "SELECT event_id, node_id, region, severity_clean, event_timestamp FROM iceberg.noc.performance_metrics ORDER BY event_timestamp DESC LIMIT 50",
+          "refId": "A"
+        }
+      ]
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["noc", "performance", "iceberg"],
+  "time": { "from": "now-6h", "to": "now" },
+  "title": "NOC Performance Metrics Dashboard",
+  "uid": "noc-performance-metrics-dashboard"
+}

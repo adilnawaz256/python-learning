@@ -168,8 +168,44 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  # 7. Apache Trino (SQL Query Engine for Apache Iceberg)
+  trino:
+    image: trinodb/trino:435
+    container_name: noc-trino
+    hostname: trino
+    ports:
+      - "8082:8080"
+    volumes:
+      - ./trino/catalog:/etc/trino/catalog
+      - ./trino/config.properties:/etc/trino/config.properties
+      - ./trino/node.properties:/etc/trino/node.properties
+      - ./trino/jvm.config:/etc/trino/jvm.config
+    depends_on:
+      minio:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # 8. Grafana Dashboards Engine
+  grafana:
+    image: grafana/grafana:10.4.0
+    container_name: noc-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_INSTALL_PLUGINS=trinodb-trino-datasource
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - trino
+    restart: unless-stopped
+
 volumes:
   minio_data:
   kafka_data:
   postgres_data:
   spark_data:
+  grafana_data:

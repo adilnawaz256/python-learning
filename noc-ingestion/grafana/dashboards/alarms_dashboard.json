@@ -1,0 +1,70 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "title": "Total Active Alarms",
+      "type": "stat",
+      "gridPos": { "h": 6, "w": 8, "x": 0, "y": 0 },
+      "id": 1,
+      "targets": [
+        {
+          "datasource": { "type": "trinodb-trino-datasource", "uid": "Trino Iceberg" },
+          "rawSql": "SELECT COUNT(*) as total_alarms FROM iceberg.noc.alarms",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Alarms by Severity",
+      "type": "piechart",
+      "gridPos": { "h": 6, "w": 8, "x": 8, "y": 0 },
+      "id": 2,
+      "targets": [
+        {
+          "datasource": { "type": "trinodb-trino-datasource", "uid": "Trino Iceberg" },
+          "rawSql": "SELECT severity_clean, COUNT(*) as count FROM iceberg.noc.alarms GROUP BY severity_clean",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Alarms by Vendor",
+      "type": "barchart",
+      "gridPos": { "h": 6, "w": 8, "x": 16, "y": 0 },
+      "id": 3,
+      "targets": [
+        {
+          "datasource": { "type": "trinodb-trino-datasource", "uid": "Trino Iceberg" },
+          "rawSql": "SELECT vendor, COUNT(*) as count FROM iceberg.noc.alarms GROUP BY vendor",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Recent Alarm Events Log",
+      "type": "table",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 6 },
+      "id": 4,
+      "targets": [
+        {
+          "datasource": { "type": "trinodb-trino-datasource", "uid": "Trino Iceberg" },
+          "rawSql": "SELECT event_id, node_id, region, vendor, severity_clean, event_timestamp FROM iceberg.noc.alarms ORDER BY event_timestamp DESC LIMIT 50",
+          "refId": "A"
+        }
+      ]
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["noc", "alarms", "iceberg"],
+  "time": { "from": "now-6h", "to": "now" },
+  "title": "NOC Alarms Analytics Dashboard",
+  "uid": "noc-alarms-dashboard"
+}

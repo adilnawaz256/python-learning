@@ -1,0 +1,10 @@
+apiVersion: 1
+
+providers:
+  - name: Telecom NOC Starter Dashboards
+    folder: NOC Analytics
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /var/lib/grafana/dashboards

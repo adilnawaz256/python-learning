@@ -1,0 +1,57 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "title": "Total Incident Tickets",
+      "type": "stat",
+      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 0 },
+      "id": 1,
+      "targets": [
+        {
+          "datasource": { "type": "trinodb-trino-datasource", "uid": "Trino Iceberg" },
+          "rawSql": "SELECT COUNT(*) as total_tickets FROM iceberg.noc.tickets",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Tickets by Priority",
+      "type": "piechart",
+      "gridPos": { "h": 6, "w": 12, "x": 12, "y": 0 },
+      "id": 2,
+      "targets": [
+        {
+          "datasource": { "type": "trinodb-trino-datasource", "uid": "Trino Iceberg" },
+          "rawSql": "SELECT severity_clean as priority, COUNT(*) as count FROM iceberg.noc.tickets GROUP BY severity_clean",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Incident Ticket Log",
+      "type": "table",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 6 },
+      "id": 3,
+      "targets": [
+        {
+          "datasource": { "type": "trinodb-trino-datasource", "uid": "Trino Iceberg" },
+          "rawSql": "SELECT event_id, source, severity_clean, event_timestamp FROM iceberg.noc.tickets ORDER BY event_timestamp DESC LIMIT 50",
+          "refId": "A"
+        }
+      ]
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["noc", "tickets", "iceberg"],
+  "time": { "from": "now-6h", "to": "now" },
+  "title": "NOC Trouble Tickets Dashboard",
+  "uid": "noc-tickets-dashboard"
+}

@@ -1,19 +1,19 @@
-# Telecom NOC Enterprise Ingestion Platform - Phase 2 Extension (`noc-ingestion`)
+# Telecom NOC Enterprise Ingestion & Analytics Platform (`noc-ingestion`)
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.111.0-009688.svg)](https://fastapi.tiangolo.com/)
 [![MinIO](https://img.shields.io/badge/MinIO-S3_Compatible-red.svg)](https://min.io/)
 [![Kafka](https://img.shields.io/badge/Apache_Kafka-Multi_Topic-black.svg)](https://kafka.apache.org/)
 [![Spark](https://img.shields.io/badge/Apache_Spark-3.5.1_PySpark-orange.svg)](https://spark.apache.org/)
-[![Iceberg Ready](https://img.shields.io/badge/Apache_Iceberg-Compatible_Parquet-blue.svg)](https://iceberg.apache.org/)
+[![Apache Iceberg](https://img.shields.io/badge/Apache_Iceberg-Open_Table_Format-blue.svg)](https://iceberg.apache.org/)
+[![Apache Trino](https://img.shields.io/badge/Apache_Trino-SQL_Query_Engine-red.svg)](https://trino.io/)
+[![Grafana](https://img.shields.io/badge/Grafana-10.4_Dashboards-orange.svg)](https://grafana.com/)
 
-Enterprise-grade multi-source telemetry data ingestion platform for a **Telecom Network Operations Center (NOC) Dashboard Platform**. Built with Clean Architecture, non-blocking async IO, automated REST connector scheduling, multi-topic Kafka streaming, file upload processing, PostgreSQL audit tracking, and PySpark ETL processing outputting Iceberg-ready Parquet datasets.
+Enterprise-grade multi-source telemetry data ingestion and analytics platform for a **Telecom Network Operations Center (NOC) Dashboard Platform**. Built with Clean Architecture, non-blocking async IO, automated REST connector scheduling, multi-topic Kafka streaming, file upload processing, PostgreSQL audit tracking, PySpark ETL processing writing to Apache Iceberg tables, Apache Trino SQL query engine, and Grafana dashboards.
 
 ---
 
-## 🚀 Phase 2 Architectural Overview
-
-The system extends the existing pipeline with additional ingestion vectors (Mock External Monitoring REST API, automated APScheduler REST connector, multipart file upload module, multi-topic Kafka producers/consumers, PostgreSQL upload history audit table, PySpark data cleaning, and Dashboard & Job monitoring REST APIs).
+## 🚀 Complete Platform Architecture
 
 ```
                            Data Sources
@@ -39,90 +39,68 @@ The system extends the existing pipeline with additional ingestion vectors (Mock
           kafka/ (alarms, tickets, network, security, performance)
           rest/
           uploads/
-      processed/ (parquet/ - Iceberg Ready)
-      failed/
-      archive/
+      processed/
+      iceberg-warehouse/
                            ▼
                     Apache Spark
-          (Clean, Validate, Deduplicate, Parquet)
+          (Clean, Validate, Deduplicate)
                            ▼
-               Ready for Apache Iceberg
+                  Apache Iceberg Tables
+      (alarms, tickets, network_events,
+       security_events, performance_metrics)
+                           ▼
+                  Apache Trino (SQL Engine)
+           (Port 8082: SHOW TABLES, SELECT SQL)
+                           ▼
+                  Grafana Dashboards
+           (Port 3000: 5 Starter Dashboards)
 ```
 
 ---
 
-## 📁 MinIO Folder Structure
+## 📁 MinIO Folder & Iceberg Catalog Layout
 
-Raw and processed telemetry landing zone layout in MinIO (`noc-raw-data` bucket):
+Raw telemetry and Iceberg open table storage layout in MinIO (`noc-raw-data` bucket):
 
 ```
-raw/
-    kafka/
-        alarms/
-        tickets/
-        network/
-        security/
-        performance/
-    rest/
-    uploads/
-        csv/
-        excel/
-        json/
-        pdf/
-processed/
-    parquet/
-        alarms/
-        tickets/
-        network/
-        security/
-        performance/
-        rest/
-        uploads_csv/
-        uploads_json/
-failed/
-archive/
+noc-raw-data/
+├── raw/
+│   ├── kafka/
+│   │   ├── alarms/
+│   │   ├── tickets/
+│   │   ├── network/
+│   │   ├── security/
+│   │   └── performance/
+│   ├── rest/
+│   └── uploads/
+│       ├── csv/
+│       ├── excel/
+│       ├── json/
+│       └── pdf/
+├── processed/
+│   └── parquet/
+└── iceberg-warehouse/
+    └── noc/
+        ├── alarms/
+        ├── tickets/
+        ├── network_events/
+        ├── security_events/
+        └── performance_metrics/
 ```
 
 ---
 
-## 🛰️ API Endpoint Reference
+## 📊 Grafana Starter Dashboards
 
-### 1. Mock External REST API (`http://localhost:8001`)
-- `GET /health`: Health status.
-- `GET /api/v1/alarms`: Live simulated Comarch OSS alarm telemetry.
-- `GET /api/v1/tickets`: Live simulated ServiceNow incident tickets.
-- `GET /api/v1/network-events`: Cell tower and router health KPI events.
-- `GET /api/v1/security-events`: Trend Micro & CyberArk security threat events.
-- `GET /api/v1/performance`: Device CPU, memory, latency, packet loss metrics.
-- `GET /api/v1/sites`: NOC site inventory.
-- `GET /api/v1/devices`: Network device inventory.
+The system comes pre-configured with 5 Grafana dashboards querying Apache Iceberg tables via Trino:
+1. 📊 **NOC Alarms Analytics Dashboard**: Active Alarms by Severity & Vendor distribution.
+2. 🎫 **NOC Trouble Tickets Dashboard**: Incident Priority (P1-P4) & Resolution State metrics.
+3. 📡 **NOC Network Events Dashboard**: Cell tower outages & network health metrics by region.
+4. 🛡️ **NOC Security Threat Events Dashboard**: Threat levels & security event actions.
+5. 📈 **NOC Performance Metrics Dashboard**: Device CPU, Memory, Latency, & Packet Loss telemetry.
 
-### 2. Main NOC Ingestion API (`http://localhost:8000`)
+---
 
-#### File Upload & History APIs
-- `POST /api/v1/upload/csv`: Upload, parse CSV, store original in MinIO, track in Postgres, publish to Kafka.
-- `POST /api/v1/upload/excel`: Upload, parse Excel (.xlsx/.xls), store in MinIO, track in Postgres, publish to Kafka.
-- `POST /api/v1/upload/json`: Upload JSON file, store in MinIO, track in Postgres, publish to Kafka.
-- `POST /api/v1/upload/pdf`: Upload PDF document, store in MinIO, track metadata in Postgres.
-- `GET /api/v1/uploads`: Fetch file upload history list from PostgreSQL.
-- `GET /api/v1/uploads/{id}`: Get upload record by ID.
-- `DELETE /api/v1/uploads/{id}`: Delete upload record from history.
+## ☁️ AWS EC2 Deployment & Validation Guide
 
-#### Dashboard Analytics APIs
-- `GET /dashboard/summary`: High-level ingestion statistics, active streams, and system health.
-- `GET /dashboard/alarms`: Active alarm breakdown by severity (CRITICAL, MAJOR, MINOR, WARNING, INFO) and vendor.
-- `GET /dashboard/tickets`: Incident ticket metrics by priority (P1-P4) and state.
-- `GET /dashboard/uploads`: Summary file upload statistics across formats.
-- `GET /dashboard/jobs`: Summary telemetry of Spark processing job executions.
-- `GET /dashboard/performance`: Aggregate latency, packet loss, and throughput health metrics.
-
-#### Job Monitoring APIs
-- `GET /jobs`: Execution history of Spark batch ETL jobs.
-- `GET /jobs/{id}`: Detailed status of a specific Spark processing job execution.
-- `POST /jobs/run`: Trigger execution of Spark batch processing job on demand.
-- `GET /processing/status`: Real-time operational status of Kafka Consumers, REST Schedulers, and Spark engine.
-
-## ☁️ AWS EC2 Deployment & Validation
-
-For step-by-step instructions on deploying and validating this platform on your AWS EC2 instance (including Kafka, Spark, MinIO, Postgres, and Docker Compose validation), refer to the [EC2 Deployment Guide](file:///Users/adilnawaz/Music/python-learning/noc-ingestion/DEPLOYMENT_EC2.md).
-
+For step-by-step instructions on deploying and validating this platform on your AWS EC2 instance (including Docker Compose, Spark Iceberg ETL execution, Trino SQL verification, and Grafana dashboard checks), refer to the [EC2 Deployment Guide](file:///Users/adilnawaz/Music/python-learning/noc-ingestion/DEPLOYMENT_EC2.md).
