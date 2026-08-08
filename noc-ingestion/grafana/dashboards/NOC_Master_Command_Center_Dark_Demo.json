@@ -112,7 +112,7 @@
       "description": "",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 0,
@@ -159,7 +159,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -176,7 +176,7 @@
       "description": "",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 2,
@@ -223,7 +223,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -240,7 +240,7 @@
       "description": "",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 4,
@@ -287,7 +287,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -304,7 +304,7 @@
       "description": "",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 6,
@@ -351,7 +351,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -368,7 +368,7 @@
       "description": "",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 8,
@@ -415,7 +415,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -432,7 +432,7 @@
       "description": "",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 10,
@@ -479,7 +479,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -496,7 +496,7 @@
       "description": "",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 12,
@@ -543,7 +543,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -560,7 +560,7 @@
       "description": "",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 14,
@@ -607,7 +607,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -624,7 +624,7 @@
       "description": "",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 16,
@@ -671,7 +671,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -688,7 +688,7 @@
       "description": "",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 18,
@@ -735,7 +735,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -752,7 +752,7 @@
       "description": "",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 20,
@@ -799,7 +799,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -816,7 +816,7 @@
       "description": "",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 22,
@@ -863,7 +863,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -880,7 +880,7 @@
       "description": "",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 0,
@@ -935,7 +935,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -952,7 +952,7 @@
       "description": "",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 3,
@@ -1007,7 +1007,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -1024,7 +1024,7 @@
       "description": "",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 6,
@@ -1079,7 +1079,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -1096,7 +1096,7 @@
       "description": "",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 9,
@@ -1151,7 +1151,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -1168,7 +1168,7 @@
       "description": "",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 12,
@@ -1215,7 +1215,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -1232,7 +1232,7 @@
       "description": "",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 15,
@@ -1279,7 +1279,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -1296,7 +1296,7 @@
       "description": "",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 18,
@@ -1343,7 +1343,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -1360,7 +1360,7 @@
       "description": "",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 21,
@@ -1407,7 +1407,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -1423,7 +1423,7 @@
       "title": "RAN STATUS \u2022 EVENT TREND",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 0,
@@ -1497,7 +1497,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -1508,7 +1508,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -1524,7 +1524,7 @@
       "title": "ALARMS BY REGION",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 6,
@@ -1568,7 +1568,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -1584,7 +1584,7 @@
       "title": "NETWORK OVERVIEW \u2022 KSA",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 10,
@@ -1672,7 +1672,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -1688,7 +1688,7 @@
       "title": "ALARM SEVERITY",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 18,
@@ -1736,7 +1736,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -1752,7 +1752,7 @@
       "title": "TRANSPORT HEALTH",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 21,
@@ -1808,7 +1808,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -1824,7 +1824,7 @@
       "title": "TICKETS BY PRIORITY",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 0,
@@ -1872,7 +1872,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -1888,7 +1888,7 @@
       "title": "SECURITY EVENT TREND",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 6,
@@ -1962,7 +1962,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -1978,7 +1978,7 @@
       "title": "PERFORMANCE HEALTH",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 18,
@@ -2034,7 +2034,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -2050,7 +2050,7 @@
       "title": "PERFORMANCE BY REGION",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 21,
@@ -2094,7 +2094,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -2110,7 +2110,7 @@
       "title": "SLA / TICKETS",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 0,
@@ -2166,7 +2166,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -2183,7 +2183,7 @@
       "description": "",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 4,
@@ -2229,7 +2229,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -2246,7 +2246,7 @@
       "description": "",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 6,
@@ -2292,7 +2292,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -2309,7 +2309,7 @@
       "description": "",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 8,
@@ -2355,7 +2355,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -2371,7 +2371,7 @@
       "title": "ALARM RATE TREND \u2022 24H",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 10,
@@ -2445,7 +2445,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -2461,7 +2461,7 @@
       "title": "SECURITY SEVERITY",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 18,
@@ -2509,7 +2509,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -2526,7 +2526,7 @@
       "description": "Demo analytical tables: alarms, tickets, network_events, security_events, performance_metrics",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 21,
@@ -2572,7 +2572,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -2588,7 +2588,7 @@
       "title": "RECENT CRITICAL / MAJOR ALARMS",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 0,
@@ -2646,7 +2646,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -2662,7 +2662,7 @@
       "title": "RECENT TROUBLE TICKETS",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 8,
@@ -2720,7 +2720,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
@@ -2736,7 +2736,7 @@
       "title": "RECENT SECURITY EVENTS",
       "datasource": {
         "type": "trino-datasource",
-        "uid": "Trino Iceberg"
+        "uid": "trino-iceberg"
       },
       "gridPos": {
         "x": 16,
@@ -2794,7 +2794,7 @@
         {
           "datasource": {
             "type": "trino-datasource",
-            "uid": "Trino Iceberg"
+            "uid": "trino-iceberg"
           },
           "editorMode": "code",
           "format": "table",
