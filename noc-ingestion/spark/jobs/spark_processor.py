@@ -13,11 +13,13 @@ from pyspark.sql.functions import (
     current_timestamp,
     date_format,
 )
-from pyspark.sql.utils import AnalysisException
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger("NOC-Spark-ETL-Processor")
+
+# Global in-memory cache for confirmed existing Iceberg tables
+KNOWN_ICEBERG_TABLES = set()
 
 
 def create_spark_session() -> SparkSession:
@@ -123,15 +125,20 @@ def normalize_and_clean_dataframe(df):
 
 
 def check_table_exists(spark: SparkSession, full_table_name: str) -> bool:
-    """Checks whether an Apache Iceberg catalog table already exists."""
+    """Checks whether an Apache Iceberg catalog table already exists with in-memory caching."""
+    if full_table_name in KNOWN_ICEBERG_TABLES:
+        return True
+
     try:
         if spark.catalog.tableExists(full_table_name):
+            KNOWN_ICEBERG_TABLES.add(full_table_name)
             return True
     except Exception:
         pass
 
     try:
         spark.read.table(full_table_name).limit(1).collect()
+        KNOWN_ICEBERG_TABLES.add(full_table_name)
         return True
     except Exception:
         return False
@@ -143,16 +150,20 @@ def make_micro_batch_handler(category: str, iceberg_table_name: str):
         if batch_df is None:
             return
 
+        # Fast non-blocking check to see if micro-batch contains data
         try:
-            if batch_df.rdd.isEmpty():
+            if not batch_df.head(1):
                 return
         except Exception:
-            pass
+            return
 
         logger.info(f"[STREAMING BATCH] Processing micro-batch {batch_id} for category '{category}' -> Iceberg 'iceberg.noc.{iceberg_table_name}'")
 
         try:
             cleaned_df = normalize_and_clean_dataframe(batch_df)
+            if not cleaned_df.head(1):
+                return
+
             bucket_name = os.getenv("MINIO_BUCKET", "noc-raw-data")
 
             # 1. Append clean Parquet files to landing zone
@@ -169,12 +180,12 @@ def make_micro_batch_handler(category: str, iceberg_table_name: str):
             is_existing = check_table_exists(spark, full_iceberg_target)
 
             if is_existing:
-                logger.info(f"Table '{full_iceberg_target}' exists. Appending micro-batch {batch_id}...")
                 cleaned_df.writeTo(full_iceberg_target).tableProperty("write.format.default", "parquet").append()
                 logger.info(f"✅ Micro-batch {batch_id} appended to existing Iceberg table '{full_iceberg_target}'")
             else:
                 logger.info(f"Table '{full_iceberg_target}' does not exist yet. Creating table...")
                 cleaned_df.writeTo(full_iceberg_target).tableProperty("write.format.default", "parquet").create()
+                KNOWN_ICEBERG_TABLES.add(full_iceberg_target)
                 logger.info(f"✅ Created and populated Iceberg table '{full_iceberg_target}'")
 
         except Exception as ie:
@@ -184,19 +195,33 @@ def make_micro_batch_handler(category: str, iceberg_table_name: str):
 
 
 def start_streaming_query(spark: SparkSession, s3_input_path: str, category: str, iceberg_table_name: str, file_format: str = "json"):
-    """Starts an incremental PySpark Structured Streaming query with S3A MinIO checkpointing."""
+    """Starts an incremental PySpark Structured Streaming query with S3A MinIO checkpointing and maxFilesPerTrigger."""
     bucket_name = os.getenv("MINIO_BUCKET", "noc-raw-data")
     checkpoint_location = f"s3a://{bucket_name}/checkpoints/{category}/"
     trigger_seconds = int(os.getenv("SPARK_TRIGGER_SECONDS", "10"))
+    max_files_per_trigger = int(os.getenv("SPARK_MAX_FILES_PER_TRIGGER", "100"))
 
     logger.info(f"Initializing streaming query for '{category}' at: {s3_input_path}")
     logger.info(f"Checkpoint location: {checkpoint_location}")
+    logger.info(f"maxFilesPerTrigger: {max_files_per_trigger}, triggerSeconds: {trigger_seconds}")
 
     try:
         if file_format == "json":
-            reader = spark.readStream.option("recursiveFileLookup", "true").option("multiline", "true").format("json")
+            reader = (
+                spark.readStream
+                .option("recursiveFileLookup", "true")
+                .option("multiline", "true")
+                .option("maxFilesPerTrigger", max_files_per_trigger)
+                .format("json")
+            )
         elif file_format == "csv":
-            reader = spark.readStream.option("recursiveFileLookup", "true").option("header", "true").format("csv")
+            reader = (
+                spark.readStream
+                .option("recursiveFileLookup", "true")
+                .option("header", "true")
+                .option("maxFilesPerTrigger", max_files_per_trigger)
+                .format("csv")
+            )
         else:
             logger.warning(f"Unsupported format '{file_format}' for category '{category}'")
             return None
@@ -219,7 +244,6 @@ def start_streaming_query(spark: SparkSession, s3_input_path: str, category: str
 
 
 def main():
-    start_time = time.time()
     logger.info("Initializing Continuous Incremental PySpark ETL Engine for Iceberg Tables...")
 
     # Step 1: Spark Session
@@ -249,11 +273,20 @@ def main():
     logger.info(f"Active streaming queries: {len(active_queries)}. Entering continuous streaming loop...")
 
     try:
-        spark.streams.awaitAnyTermination()
+        while True:
+            time.sleep(5)
+            for q in list(active_queries):
+                if not q.isActive:
+                    err = q.exception()
+                    if err:
+                        logger.error(f"Streaming query '{q.id}' failed with exception: {err}")
     except KeyboardInterrupt:
         logger.info("Received shutdown signal. Stopping active streaming queries...")
         for q in active_queries:
-            q.stop()
+            try:
+                q.stop()
+            except Exception:
+                pass
         spark.stop()
         logger.info("Spark session stopped gracefully.")
 
