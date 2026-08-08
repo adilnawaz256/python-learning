@@ -162,7 +162,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT COUNT(*) AS value FROM iceberg.noc.alarms WHERE severity_clean='CRITICAL'",
           "refId": "A"
@@ -226,7 +226,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT COUNT(*) AS value FROM iceberg.noc.alarms",
           "refId": "A"
@@ -290,7 +290,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT COUNT(*) AS value FROM iceberg.noc.tickets",
           "refId": "A"
@@ -354,7 +354,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT COUNT(*) AS value FROM iceberg.noc.network_events",
           "refId": "A"
@@ -418,7 +418,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT COUNT(*) AS value FROM iceberg.noc.security_events",
           "refId": "A"
@@ -482,7 +482,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT COUNT(*) AS value FROM iceberg.noc.performance_metrics",
           "refId": "A"
@@ -546,7 +546,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT COUNT(DISTINCT node_id) AS value FROM iceberg.noc.network_events WHERE severity_clean IN ('CRITICAL','MAJOR')",
           "refId": "A"
@@ -610,7 +610,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT SUM(cnt) AS value FROM (\n        SELECT COUNT(*) cnt FROM iceberg.noc.alarms WHERE source LIKE 'REST_%'\n        UNION ALL SELECT COUNT(*) FROM iceberg.noc.tickets WHERE source LIKE 'REST_%'\n        UNION ALL SELECT COUNT(*) FROM iceberg.noc.network_events WHERE source LIKE 'REST_%'\n        UNION ALL SELECT COUNT(*) FROM iceberg.noc.security_events WHERE source LIKE 'REST_%'\n        UNION ALL SELECT COUNT(*) FROM iceberg.noc.performance_metrics WHERE source LIKE 'REST_%'\n    )",
           "refId": "A"
@@ -674,7 +674,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT SUM(cnt) AS value FROM (\n        SELECT COUNT(*) cnt FROM iceberg.noc.alarms WHERE source NOT LIKE 'REST_%'\n        UNION ALL SELECT COUNT(*) FROM iceberg.noc.tickets WHERE source NOT LIKE 'REST_%'\n        UNION ALL SELECT COUNT(*) FROM iceberg.noc.network_events WHERE source NOT LIKE 'REST_%'\n        UNION ALL SELECT COUNT(*) FROM iceberg.noc.security_events WHERE source NOT LIKE 'REST_%'\n        UNION ALL SELECT COUNT(*) FROM iceberg.noc.performance_metrics WHERE source NOT LIKE 'REST_%'\n    )",
           "refId": "A"
@@ -738,7 +738,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT COUNT(DISTINCT node_id) AS value FROM iceberg.noc.network_events WHERE severity_clean='CRITICAL'",
           "refId": "A"
@@ -802,7 +802,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT ROUND(100.0 - (100.0 * SUM(CASE WHEN severity_clean='CRITICAL' THEN 1 ELSE 0 END) / NULLIF(COUNT(*),0)),2) AS value FROM iceberg.noc.tickets",
           "refId": "A"
@@ -866,7 +866,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT ROUND(100.0 - (10.0 * SUM(CASE WHEN severity_clean='CRITICAL' THEN 1 ELSE 0 END) / NULLIF(COUNT(*),0)),2) AS value FROM iceberg.noc.network_events",
           "refId": "A"
@@ -938,7 +938,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT ROUND(100.0 - (8.0 * SUM(CASE WHEN severity_clean IN ('CRITICAL','MAJOR') THEN 1 ELSE 0 END) / NULLIF(COUNT(*),0)),2) AS value FROM iceberg.noc.network_events",
           "refId": "A"
@@ -1010,7 +1010,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT ROUND(100.0 - (100.0 * SUM(CASE WHEN severity_clean='CRITICAL' THEN 1 ELSE 0 END) / NULLIF(COUNT(*),0)),2) AS value FROM iceberg.noc.tickets",
           "refId": "A"
@@ -1082,7 +1082,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT ROUND(100.0 - (12.0 * SUM(CASE WHEN severity_clean IN ('CRITICAL','MAJOR') THEN 1 ELSE 0 END) / NULLIF(COUNT(*),0)),2) AS value FROM iceberg.noc.performance_metrics",
           "refId": "A"
@@ -1154,7 +1154,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT ROUND(100.0 - (15.0 * SUM(CASE WHEN severity_clean='CRITICAL' THEN 1 ELSE 0 END) / NULLIF(COUNT(*),0)),2) AS value FROM iceberg.noc.security_events",
           "refId": "A"
@@ -1218,7 +1218,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT COUNT(*) AS value FROM iceberg.noc.alarms WHERE severity_clean='MAJOR'",
           "refId": "A"
@@ -1282,7 +1282,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT SUM(cnt) AS value FROM (\n        SELECT COUNT(*) cnt FROM iceberg.noc.alarms WHERE event_timestamp >= current_timestamp - INTERVAL '24' HOUR\n        UNION ALL SELECT COUNT(*) FROM iceberg.noc.tickets WHERE event_timestamp >= current_timestamp - INTERVAL '24' HOUR\n        UNION ALL SELECT COUNT(*) FROM iceberg.noc.network_events WHERE event_timestamp >= current_timestamp - INTERVAL '24' HOUR\n        UNION ALL SELECT COUNT(*) FROM iceberg.noc.security_events WHERE event_timestamp >= current_timestamp - INTERVAL '24' HOUR\n        UNION ALL SELECT COUNT(*) FROM iceberg.noc.performance_metrics WHERE event_timestamp >= current_timestamp - INTERVAL '24' HOUR\n    )",
           "refId": "A"
@@ -1346,7 +1346,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT COUNT(DISTINCT region) AS value FROM iceberg.noc.network_events",
           "refId": "A"
@@ -1410,7 +1410,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT COUNT(DISTINCT node_id) AS value FROM iceberg.noc.performance_metrics",
           "refId": "A"
@@ -1500,7 +1500,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT date_trunc('hour', event_timestamp) AS time, COUNT(*) AS critical\n            FROM iceberg.noc.network_events\n            WHERE event_timestamp >= current_timestamp - INTERVAL '24' HOUR AND severity_clean='CRITICAL'\n            GROUP BY 1 ORDER BY 1",
           "refId": "A"
@@ -1511,7 +1511,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT date_trunc('hour', event_timestamp) AS time, COUNT(*) AS major\n            FROM iceberg.noc.network_events\n            WHERE event_timestamp >= current_timestamp - INTERVAL '24' HOUR AND severity_clean='MAJOR'\n            GROUP BY 1 ORDER BY 1",
           "refId": "B"
@@ -1571,7 +1571,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT region, COUNT(*) AS value\n       FROM iceberg.noc.alarms\n       GROUP BY region\n       ORDER BY value DESC\n       LIMIT 8",
           "refId": "A"
@@ -1675,7 +1675,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "WITH c AS (\n  SELECT\n    COUNT(*) AS total,\n    SUM(CASE WHEN severity_clean='CRITICAL' THEN 1 ELSE 0 END) AS critical,\n    SUM(CASE WHEN severity_clean='MAJOR' THEN 1 ELSE 0 END) AS major,\n    SUM(CASE WHEN severity_clean='MINOR' THEN 1 ELSE 0 END) AS minor,\n    COUNT(DISTINCT node_id) AS nodes\n  FROM iceberg.noc.network_events\n)\nSELECT 'Riyadh' city, 24.7136 latitude, 46.6753 longitude, total AS value FROM c\nUNION ALL\nSELECT 'Jeddah', 21.4858, 39.1925, critical FROM c\nUNION ALL\nSELECT 'Dammam', 26.4207, 50.0888, major FROM c\nUNION ALL\nSELECT 'Makkah', 21.3891, 39.8579, minor FROM c\nUNION ALL\nSELECT 'Madinah', 24.5247, 39.5692, nodes FROM c",
           "refId": "A"
@@ -1739,7 +1739,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT severity_clean AS severity, COUNT(*) AS value\n       FROM iceberg.noc.alarms\n       GROUP BY severity_clean\n       ORDER BY value DESC",
           "refId": "A"
@@ -1811,7 +1811,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT ROUND(100.0 - (12.0 * SUM(CASE WHEN severity_clean IN ('CRITICAL','MAJOR') THEN 1 ELSE 0 END) / NULLIF(COUNT(*),0)),2) AS value\n       FROM iceberg.noc.performance_metrics",
           "refId": "A"
@@ -1875,7 +1875,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT severity_clean AS priority, COUNT(*) AS value\n       FROM iceberg.noc.tickets\n       GROUP BY severity_clean\n       ORDER BY value DESC",
           "refId": "A"
@@ -1965,7 +1965,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT date_trunc('hour', event_timestamp) AS time, COUNT(*) AS threats\n            FROM iceberg.noc.security_events\n            WHERE event_timestamp >= current_timestamp - INTERVAL '24' HOUR\n            GROUP BY 1 ORDER BY 1",
           "refId": "A"
@@ -2037,7 +2037,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT ROUND(100.0 - (10.0 * SUM(CASE WHEN severity_clean IN ('CRITICAL','MAJOR') THEN 1 ELSE 0 END) / NULLIF(COUNT(*),0)),2) AS value\n       FROM iceberg.noc.performance_metrics",
           "refId": "A"
@@ -2097,7 +2097,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT region, COUNT(*) AS value\n       FROM iceberg.noc.performance_metrics\n       GROUP BY region\n       ORDER BY value DESC\n       LIMIT 6",
           "refId": "A"
@@ -2169,7 +2169,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT ROUND(100.0 - (100.0 * SUM(CASE WHEN severity_clean='CRITICAL' THEN 1 ELSE 0 END) / NULLIF(COUNT(*),0)),2) AS value\n       FROM iceberg.noc.tickets",
           "refId": "A"
@@ -2232,7 +2232,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT COUNT(*) AS value FROM iceberg.noc.security_events WHERE severity_clean='CRITICAL'",
           "refId": "A"
@@ -2295,7 +2295,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT COUNT(*) AS value FROM iceberg.noc.network_events WHERE severity_clean='MAJOR'",
           "refId": "A"
@@ -2358,7 +2358,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT COUNT(DISTINCT node_id) AS value FROM iceberg.noc.alarms",
           "refId": "A"
@@ -2448,7 +2448,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT date_trunc('hour', event_timestamp) AS time, COUNT(*) AS alarms\n            FROM iceberg.noc.alarms\n            WHERE event_timestamp >= current_timestamp - INTERVAL '24' HOUR\n            GROUP BY 1 ORDER BY 1",
           "refId": "A"
@@ -2512,7 +2512,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT severity_clean AS severity, COUNT(*) AS value\n       FROM iceberg.noc.security_events\n       GROUP BY severity_clean",
           "refId": "A"
@@ -2575,7 +2575,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT 5 AS value",
           "refId": "A"
@@ -2649,7 +2649,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT event_id AS \"Event ID\",\n              node_id AS \"Node\",\n              region AS \"Region\",\n              severity_clean AS \"Severity\",\n              event_timestamp AS \"Time\"\n       FROM iceberg.noc.alarms\n       WHERE severity_clean IN ('CRITICAL','MAJOR')\n       ORDER BY event_timestamp DESC\n       LIMIT 40",
           "refId": "A"
@@ -2723,7 +2723,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT event_id AS \"Ticket ID\",\n              source AS \"Source\",\n              region AS \"Region\",\n              severity_clean AS \"Priority\",\n              event_timestamp AS \"Created\"\n       FROM iceberg.noc.tickets\n       ORDER BY event_timestamp DESC\n       LIMIT 40",
           "refId": "A"
@@ -2797,7 +2797,7 @@
             "uid": "trino-iceberg"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": 0,
           "rawQuery": true,
           "rawSql": "SELECT event_id AS \"Event ID\",\n              node_id AS \"Node\",\n              region AS \"Region\",\n              severity_clean AS \"Threat\",\n              event_timestamp AS \"Time\"\n       FROM iceberg.noc.security_events\n       ORDER BY event_timestamp DESC\n       LIMIT 40",
           "refId": "A"
