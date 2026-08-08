@@ -5,7 +5,7 @@
 set -e
 
 CONTAINER_NAME="noc-spark-master"
-JOB_PATH="/opt/spark/spark-apps/jobs/read_minio.py"
+JOB_PATH="/opt/spark/spark-apps/jobs/spark_processor.py"
 CONF_FILE="/opt/spark/conf/spark-defaults.conf"
 
 echo "🚀 Submitting PySpark Job to ${CONTAINER_NAME}..."
