@@ -1,76 +1,6 @@
 {
-  "__elements": {},
-  "__requires": [
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "10.4.0"
-    },
-    {
-      "type": "datasource",
-      "id": "trino-datasource",
-      "name": "Trino",
-      "version": "1.0.0"
-    },
-    {
-      "type": "panel",
-      "id": "stat",
-      "name": "Stat",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "timeseries",
-      "name": "Time series",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "piechart",
-      "name": "Pie chart",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "barchart",
-      "name": "Bar chart",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "gauge",
-      "name": "Gauge",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "geomap",
-      "name": "Geomap",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "table",
-      "name": "Table",
-      "version": ""
-    }
-  ],
   "annotations": {
-    "list": [
-      {
-        "builtIn": 1,
-        "datasource": {
-          "type": "grafana",
-          "uid": "-- Grafana --"
-        },
-        "enable": true,
-        "hide": true,
-        "iconColor": "rgba(0, 211, 255, 1)",
-        "name": "Annotations & Alerts",
-        "type": "dashboard"
-      }
-    ]
+    "list": []
   },
   "editable": true,
   "fiscalYearStartMonth": 0,
@@ -93,21 +23,13 @@
         "content": "<div style=\"display:flex;justify-content:space-between;align-items:center;height:100%;padding:0 6px;\">\n    <div><span style=\"font-size:21px;font-weight:700;color:#E8FFF5;\">NOC MASTER COMMAND CENTER</span>\n    <span style=\"margin-left:12px;font-size:12px;color:#35d0ba;\">DEMO \u2022 KAFKA + REST + FILES</span></div>\n    <div style=\"font-size:12px;color:#8ba89e;\">MinIO \u2192 Spark \u2192 Iceberg \u2192 Trino \u2192 Grafana</div></div>",
         "mode": "html"
       },
-      "transparent": true,
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      }
+      "transparent": true
     },
     {
       "id": 2,
       "type": "stat",
       "title": "CRITICAL ALARMS",
       "description": "",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 0,
         "y": 2,
@@ -166,10 +88,6 @@
       "type": "stat",
       "title": "TOTAL ALARMS",
       "description": "",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 2,
         "y": 2,
@@ -228,10 +146,6 @@
       "type": "stat",
       "title": "OPEN TICKETS",
       "description": "",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 4,
         "y": 2,
@@ -290,10 +204,6 @@
       "type": "stat",
       "title": "NETWORK EVENTS",
       "description": "",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 6,
         "y": 2,
@@ -352,10 +262,6 @@
       "type": "stat",
       "title": "SECURITY EVENTS",
       "description": "",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 8,
         "y": 2,
@@ -414,10 +320,6 @@
       "type": "stat",
       "title": "PERF RECORDS",
       "description": "",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 10,
         "y": 2,
@@ -476,10 +378,6 @@
       "type": "stat",
       "title": "AFFECTED NODES",
       "description": "",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 12,
         "y": 2,
@@ -538,10 +436,6 @@
       "type": "stat",
       "title": "REST EVENTS",
       "description": "",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 14,
         "y": 2,
@@ -600,10 +494,6 @@
       "type": "stat",
       "title": "KAFKA EVENTS",
       "description": "",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 16,
         "y": 2,
@@ -662,10 +552,6 @@
       "type": "stat",
       "title": "SITES DOWN",
       "description": "",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 18,
         "y": 2,
@@ -724,10 +610,6 @@
       "type": "stat",
       "title": "SLA PROXY",
       "description": "",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 20,
         "y": 2,
@@ -786,10 +668,6 @@
       "type": "stat",
       "title": "E2E AVAIL.",
       "description": "",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 22,
         "y": 2,
@@ -848,10 +726,6 @@
       "type": "stat",
       "title": "RAN AVAILABILITY",
       "description": "",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 0,
         "y": 5,
@@ -918,10 +792,6 @@
       "type": "stat",
       "title": "SLA COMPLIANCE",
       "description": "",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 3,
         "y": 5,
@@ -988,10 +858,6 @@
       "type": "stat",
       "title": "NETWORK HEALTH",
       "description": "",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 6,
         "y": 5,
@@ -1058,10 +924,6 @@
       "type": "stat",
       "title": "SECURITY HEALTH",
       "description": "",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 9,
         "y": 5,
@@ -1128,10 +990,6 @@
       "type": "stat",
       "title": "MAJOR ALARMS",
       "description": "",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 12,
         "y": 5,
@@ -1190,10 +1048,6 @@
       "type": "stat",
       "title": "24H EVENTS",
       "description": "",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 15,
         "y": 5,
@@ -1252,10 +1106,6 @@
       "type": "stat",
       "title": "ACTIVE REGIONS",
       "description": "",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 18,
         "y": 5,
@@ -1314,10 +1164,6 @@
       "type": "stat",
       "title": "MONITORED NODES",
       "description": "",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 21,
         "y": 5,
@@ -1375,10 +1221,6 @@
       "id": 22,
       "type": "timeseries",
       "title": "RAN STATUS \u2022 EVENT TREND",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 0,
         "y": 9,
@@ -1472,10 +1314,6 @@
       "id": 23,
       "type": "barchart",
       "title": "ALARMS BY REGION",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 6,
         "y": 9,
@@ -1530,10 +1368,6 @@
       "id": 24,
       "type": "geomap",
       "title": "NETWORK OVERVIEW \u2022 KSA",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 10,
         "y": 9,
@@ -1632,10 +1466,6 @@
       "id": 25,
       "type": "piechart",
       "title": "ALARM SEVERITY",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 18,
         "y": 9,
@@ -1694,10 +1524,6 @@
       "id": 26,
       "type": "gauge",
       "title": "TRANSPORT HEALTH",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 21,
         "y": 9,
@@ -1764,10 +1590,6 @@
       "id": 27,
       "type": "piechart",
       "title": "TICKETS BY PRIORITY",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 0,
         "y": 17,
@@ -1826,10 +1648,6 @@
       "id": 28,
       "type": "timeseries",
       "title": "SECURITY EVENT TREND",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 6,
         "y": 17,
@@ -1914,10 +1732,6 @@
       "id": 29,
       "type": "gauge",
       "title": "PERFORMANCE HEALTH",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 18,
         "y": 17,
@@ -1984,10 +1798,6 @@
       "id": 30,
       "type": "barchart",
       "title": "PERFORMANCE BY REGION",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 21,
         "y": 17,
@@ -2042,10 +1852,6 @@
       "id": 31,
       "type": "gauge",
       "title": "SLA / TICKETS",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 0,
         "y": 25,
@@ -2113,10 +1919,6 @@
       "type": "stat",
       "title": "CRITICAL SECURITY",
       "description": "",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 4,
         "y": 25,
@@ -2174,10 +1976,6 @@
       "type": "stat",
       "title": "MAJOR NETWORK",
       "description": "",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 6,
         "y": 25,
@@ -2235,10 +2033,6 @@
       "type": "stat",
       "title": "NODES IN ALARM",
       "description": "",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 8,
         "y": 25,
@@ -2295,10 +2089,6 @@
       "id": 35,
       "type": "timeseries",
       "title": "ALARM RATE TREND \u2022 24H",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 10,
         "y": 25,
@@ -2383,10 +2173,6 @@
       "id": 36,
       "type": "piechart",
       "title": "SECURITY SEVERITY",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 18,
         "y": 25,
@@ -2446,10 +2232,6 @@
       "type": "stat",
       "title": "PIPELINE TABLES",
       "description": "Demo analytical tables: alarms, tickets, network_events, security_events, performance_metrics",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 21,
         "y": 25,
@@ -2506,10 +2288,6 @@
       "id": 38,
       "type": "table",
       "title": "RECENT CRITICAL / MAJOR ALARMS",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 0,
         "y": 31,
@@ -2578,10 +2356,6 @@
       "id": 39,
       "type": "table",
       "title": "RECENT TROUBLE TICKETS",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 8,
         "y": 31,
@@ -2650,10 +2424,6 @@
       "id": 40,
       "type": "table",
       "title": "RECENT SECURITY EVENTS",
-      "datasource": {
-        "type": "trino-datasource",
-        "uid": "trino-iceberg"
-      },
       "gridPos": {
         "x": 16,
         "y": 31,
