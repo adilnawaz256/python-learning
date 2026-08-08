@@ -150,27 +150,36 @@ def check_table_exists(spark: SparkSession, full_table_name: str) -> bool:
 def make_micro_batch_handler(category: str, iceberg_table_name: str):
     """Creates a micro-batch handler function for Structured Streaming writeStream.foreachBatch."""
     def process_micro_batch(batch_df, batch_id):
+        # EXPLICIT FIRST LINE LOGGING FOR DIAGNOSTICS
+        logger.info(f"🔔 [CALLBACK ENTERED] Category '{category}', Micro-batch ID: {batch_id}, DataFrame is None? {batch_df is None}")
+
         if batch_df is None:
             return
 
         # Assign micro-batch job execution to category pool under Spark FAIR scheduler
         try:
             batch_df.sparkSession.sparkContext.setLocalProperty("spark.scheduler.pool", category)
-        except Exception:
-            pass
+            logger.info(f"  └─ Set FAIR scheduler pool property to '{category}'")
+        except Exception as pe:
+            logger.warning(f"Could not set scheduler pool property: {pe}")
 
-        # Fast non-blocking check to see if micro-batch contains data
+        # Check if micro-batch contains input rows
+        has_data = False
         try:
-            if not batch_df.head(1):
-                return
-        except Exception:
+            has_data = len(batch_df.head(1)) > 0
+        except Exception as head_err:
+            logger.warning(f"  └─ Note checking head(1) for category '{category}': {head_err}")
+
+        if not has_data:
+            logger.info(f"ℹ️ [MICRO-BATCH {batch_id}] Category '{category}' triggered with 0 input rows (idle trigger or offsets already processed).")
             return
 
-        logger.info(f"[STREAMING BATCH] Processing micro-batch {batch_id} for category '{category}' -> Iceberg 'iceberg.noc.{iceberg_table_name}'")
+        logger.info(f"⚡ [STREAMING BATCH] Processing micro-batch {batch_id} for category '{category}' with input data -> Iceberg 'iceberg.noc.{iceberg_table_name}'")
 
         try:
             cleaned_df = normalize_and_clean_dataframe(batch_df)
             if not cleaned_df.head(1):
+                logger.info(f"ℹ️ [MICRO-BATCH {batch_id}] Category '{category}' cleaning resulted in 0 rows.")
                 return
 
             bucket_name = os.getenv("MINIO_BUCKET", "noc-raw-data")
@@ -210,9 +219,10 @@ def start_streaming_query(spark: SparkSession, s3_input_path: str, category: str
     trigger_seconds = int(os.getenv("SPARK_TRIGGER_SECONDS", "15"))
     max_files_per_trigger = int(os.getenv("SPARK_MAX_FILES_PER_TRIGGER", "50"))
 
-    logger.info(f"Initializing streaming query for '{category}' at: {s3_input_path}")
-    logger.info(f"Checkpoint location: {checkpoint_location}")
-    logger.info(f"maxFilesPerTrigger: {max_files_per_trigger}, triggerSeconds: {trigger_seconds}")
+    # EXPLICIT LOGGING IMMEDIATELY BEFORE QUERY START
+    logger.info(f"➡️ [PRE-START] Preparing writeStream for category '{category}' at: {s3_input_path}")
+    logger.info(f"   Checkpoint: {checkpoint_location}")
+    logger.info(f"   maxFilesPerTrigger: {max_files_per_trigger}, triggerSeconds: {trigger_seconds}")
 
     try:
         if file_format == "json":
@@ -246,10 +256,12 @@ def start_streaming_query(spark: SparkSession, s3_input_path: str, category: str
             .trigger(processingTime=f"{trigger_seconds} seconds")
             .start()
         )
-        logger.info(f"🚀 Streaming query started for '{category}' (Query ID: {query.id})")
+        
+        # EXPLICIT LOGGING IMMEDIATELY AFTER QUERY START SUCCESS
+        logger.info(f"✅ [POST-START] Query '{category}' started successfully! (Query ID: {query.id}, Run ID: {query.runId}, isActive: {query.isActive})")
         return query
     except Exception as e:
-        logger.error(f"Failed to start streaming query for {s3_input_path}: {e}")
+        logger.error(f"❌ [START ERROR] Failed to start streaming query for {s3_input_path}: {e}")
         return None
 
 
@@ -283,13 +295,28 @@ def main():
     logger.info(f"Active streaming queries: {len(active_queries)}. Entering continuous streaming loop...")
 
     try:
+        loop_counter = 0
         while True:
-            time.sleep(10)
-            for q in list(active_queries):
-                if not q.isActive:
-                    err = q.exception()
-                    if err:
-                        logger.error(f"Streaming query '{q.id}' (name: {q.name}) failed with exception: {err}")
+            time.sleep(15)
+            loop_counter += 1
+            if loop_counter % 2 == 0:  # Every 30 seconds
+                for q in active_queries:
+                    if q.isActive:
+                        status_str = "Active"
+                        try:
+                            status_str = q.status.get('message', 'Active') if isinstance(q.status, dict) else str(q.status)
+                        except Exception:
+                            pass
+                        num_rows = 0
+                        try:
+                            if q.lastProgress and isinstance(q.lastProgress, dict):
+                                num_rows = q.lastProgress.get('numInputRows', 0)
+                        except Exception:
+                            pass
+                        logger.info(f"📊 [MONITOR] Query '{q.name}' (ID: {q.id[:8]}...): status='{status_str}', lastInputRows={num_rows}")
+                    else:
+                        err = q.exception()
+                        logger.error(f"❌ [MONITOR] Query '{q.name}' (ID: {q.id[:8]}...) STOPPED! Exception: {err}")
     except KeyboardInterrupt:
         logger.info("Received shutdown signal. Stopping active streaming queries...")
         for q in active_queries:
