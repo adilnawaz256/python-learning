@@ -21,7 +21,7 @@ logger = logging.getLogger("NOC-Spark-ETL-Processor")
 
 
 def create_spark_session() -> SparkSession:
-    """Initializes SparkSession configured for MinIO S3A storage and Apache Iceberg catalog."""
+    """Initializes SparkSession configured for MinIO S3A storage, Iceberg catalog, and Structured Streaming."""
     step_start = time.time()
     logger.info("[STEP 1] Starting SparkSession initialization")
     try:
@@ -46,6 +46,7 @@ def create_spark_session() -> SparkSession:
             .config("spark.hadoop.fs.s3a.threads.max", "20")
             .config("spark.hadoop.fs.s3a.connection.maximum", "100")
             .config("spark.sql.parquet.compression.codec", "snappy")
+            .config("spark.sql.streaming.schemaInference", "true")
             .config("spark.sql.extensions", "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions")
             .config("spark.sql.catalog.iceberg", "org.apache.iceberg.spark.SparkCatalog")
             .config("spark.sql.catalog.iceberg.type", "rest")
@@ -121,116 +122,89 @@ def normalize_and_clean_dataframe(df):
     return df
 
 
-def process_category(spark: SparkSession, s3_input_path: str, category: str, iceberg_table_name: str, file_format: str = "json") -> None:
-    """Reads raw telemetry, cleans & normalizes, and appends to Apache Iceberg catalog table + Parquet landing zone."""
+def make_micro_batch_handler(category: str, iceberg_table_name: str):
+    """Creates a micro-batch handler function for Structured Streaming writeStream.foreachBatch."""
+    def process_micro_batch(batch_df, batch_id):
+        if batch_df is None:
+            return
+
+        try:
+            if batch_df.rdd.isEmpty():
+                return
+        except Exception:
+            pass
+
+        logger.info(f"[STREAMING BATCH] Processing micro-batch {batch_id} for category '{category}' -> Iceberg 'iceberg.noc.{iceberg_table_name}'")
+
+        cleaned_df = normalize_and_clean_dataframe(batch_df)
+        bucket_name = os.getenv("MINIO_BUCKET", "noc-raw-data")
+
+        # 1. Append clean Parquet files to landing zone
+        target_parquet_path = f"s3a://{bucket_name}/processed/parquet/{category}/"
+        try:
+            cleaned_df.write.mode("append").partitionBy("event_date").parquet(target_parquet_path)
+        except Exception as pe:
+            logger.warning(f"Parquet landing zone write note for {category}: {pe}")
+
+        # 2. Append to Apache Iceberg catalog table
+        full_iceberg_target = f"iceberg.noc.{iceberg_table_name}"
+        try:
+            try:
+                cleaned_df.writeTo(full_iceberg_target).tableProperty("write.format.default", "parquet").append()
+                logger.info(f"✅ Micro-batch {batch_id} appended to Iceberg table '{full_iceberg_target}'")
+            except Exception:
+                logger.info(f"Table '{full_iceberg_target}' not present. Creating table...")
+                cleaned_df.writeTo(full_iceberg_target).tableProperty("write.format.default", "parquet").create()
+                logger.info(f"✅ Created and populated Iceberg table '{full_iceberg_target}'")
+        except Exception as ie:
+            logger.error(f"❌ Failed to write micro-batch {batch_id} to Iceberg table '{full_iceberg_target}': {ie}")
+
+    return process_micro_batch
+
+
+def start_streaming_query(spark: SparkSession, s3_input_path: str, category: str, iceberg_table_name: str, file_format: str = "json"):
+    """Starts an incremental PySpark Structured Streaming query with S3A MinIO checkpointing."""
     bucket_name = os.getenv("MINIO_BUCKET", "noc-raw-data")
-    target_parquet_path = f"s3a://{bucket_name}/processed/parquet/{category}/"
+    checkpoint_location = f"s3a://{bucket_name}/checkpoints/{category}/"
+    trigger_seconds = int(os.getenv("SPARK_TRIGGER_SECONDS", "10"))
 
-    logger.info("=== Category Process Context ===")
-    logger.info("raw_path: %s", s3_input_path)
-    logger.info("Spark master: %s", spark.sparkContext.master)
-    logger.info("Spark version: %s", spark.version)
-    logger.info("spark.sparkContext.applicationId: %s", spark.sparkContext.applicationId)
-    logger.info("spark.sparkContext.master: %s", spark.sparkContext.master)
-    logger.info("spark.sparkContext.defaultParallelism: %s", spark.sparkContext.defaultParallelism)
+    logger.info(f"Initializing streaming query for '{category}' at: {s3_input_path}")
+    logger.info(f"Checkpoint location: {checkpoint_location}")
 
-    # STEP 3: Read Raw Data
-    step3_start = time.time()
-    logger.info("[STEP 3] Reading raw data format '%s' for category '%s' from: %s", file_format, category, s3_input_path)
     try:
         if file_format == "json":
-            df = spark.read.option("recursiveFileLookup", "true").option("multiline", "true").json(s3_input_path)
+            reader = spark.readStream.option("recursiveFileLookup", "true").option("multiline", "true").format("json")
         elif file_format == "csv":
-            df = spark.read.option("recursiveFileLookup", "true").option("header", "true").option("inferSchema", "true").csv(s3_input_path)
+            reader = spark.readStream.option("recursiveFileLookup", "true").option("header", "true").format("csv")
         else:
-            logger.warning(f"Unsupported format '{file_format}'")
-            return
-        step3_elapsed = time.time() - step3_start
-        logger.info("[STEP 3 COMPLETE] Reading JSON from %s took %.2f sec", s3_input_path, step3_elapsed)
-    except AnalysisException as ae:
-        if "Path does not exist" in str(ae) or "No files found" in str(ae):
-            logger.info(f"Path '{s3_input_path}' is empty (handled gracefully).")
-            return
-        else:
-            logger.error(f"Spark analysis error for '{s3_input_path}': {ae}")
-            return
-    except Exception:
-        logger.exception("[STEP 3 FAILED] Reading raw data from %s failed", s3_input_path)
-        raise
+            logger.warning(f"Unsupported format '{file_format}' for category '{category}'")
+            return None
 
-    # Print Schema & Record Count Immediately
-    try:
-        logger.info("Schema:")
-        df.printSchema()
+        df_stream = reader.load(s3_input_path)
+        handler = make_micro_batch_handler(category, iceberg_table_name)
 
-        logger.info("Executing count()")
-        count_start = time.time()
-        count = df.count()
-        count_elapsed = time.time() - count_start
-        logger.info("Record count = %s (took %.2f sec)", count, count_elapsed)
-
-        if count == 0:
-            logger.info(f"No records found at {s3_input_path}")
-            return
-    except Exception:
-        logger.exception("Failed executing schema inspection / count()")
-        raise
-
-    # STEP 4: Data Transformations & Cleaning
-    step4_start = time.time()
-    logger.info("[STEP 4] Executing transformations and schema normalization for category '%s'", category)
-    try:
-        cleaned_df = normalize_and_clean_dataframe(df)
-        row_count_after = cleaned_df.count()
-        step4_elapsed = time.time() - step4_start
-        logger.info("[STEP 4 COMPLETE] Transformations for category '%s' completed (Rows: %s -> %s) in %.2f sec", category, count, row_count_after, step4_elapsed)
-    except Exception:
-        logger.exception("[STEP 4 FAILED] Transformations failed for category '%s'", category)
-        raise
-
-    # STEP 5: Parquet Landing Zone Write
-    step5_start = time.time()
-    logger.info("[STEP 5] Writing clean Parquet files to %s", target_parquet_path)
-    try:
-        cleaned_df.write.mode("append").partitionBy("event_date").parquet(target_parquet_path)
-        step5_elapsed = time.time() - step5_start
-        logger.info("[STEP 5 COMPLETE] Wrote clean Parquet files to %s in %.2f sec", target_parquet_path, step5_elapsed)
-    except Exception:
-        logger.exception("[STEP 5 FAILED] Parquet write failed for %s", target_parquet_path)
-        raise
-
-    # STEP 6: Apache Iceberg Table Write
-    full_iceberg_target = f"iceberg.noc.{iceberg_table_name}"
-    step6_start = time.time()
-    logger.info("Writing to Iceberg table %s", full_iceberg_target)
-    logger.info("[STEP 6] Appending records to Apache Iceberg table '%s'", full_iceberg_target)
-    try:
-        try:
-            cleaned_df.writeTo(full_iceberg_target).tableProperty("write.format.default", "parquet").append()
-            logger.info(f"Appended records to Iceberg table '{full_iceberg_target}'")
-        except Exception:
-            # Fallback table creation if not existing
-            logger.info(f"Table '{full_iceberg_target}' does not exist yet. Creating table...")
-            cleaned_df.writeTo(full_iceberg_target).tableProperty("write.format.default", "parquet").create()
-            logger.info(f"Created and populated Iceberg table '{full_iceberg_target}'")
-
-        step6_elapsed = time.time() - step6_start
-        logger.info("[STEP 6 COMPLETE] Iceberg write to '%s' completed in %.2f sec", full_iceberg_target, step6_elapsed)
-    except Exception:
-        logger.exception("[STEP 6 FAILED] Iceberg table write failed for %s", full_iceberg_target)
-        raise
+        query = (
+            df_stream.writeStream
+            .foreachBatch(handler)
+            .option("checkpointLocation", checkpoint_location)
+            .trigger(processingTime=f"{trigger_seconds} seconds")
+            .start()
+        )
+        logger.info(f"🚀 Streaming query started for '{category}' (Query ID: {query.id})")
+        return query
+    except Exception as e:
+        logger.error(f"Failed to start streaming query for {s3_input_path}: {e}")
+        return None
 
 
 def main():
     start_time = time.time()
-    logger.info("Initializing Spark NOC ETL Engine for Iceberg Tables...")
+    logger.info("Initializing Continuous Incremental PySpark ETL Engine for Iceberg Tables...")
 
     # Step 1: Spark Session
     spark = create_spark_session()
 
     # Step 2: Source Path Construction
-    step2_start = time.time()
-    logger.info("[STEP 2] Constructing raw data source S3A paths")
     bucket_name = os.getenv("MINIO_BUCKET", "noc-raw-data")
     base_s3_uri = f"s3a://{bucket_name}"
 
@@ -244,21 +218,23 @@ def main():
         (f"{base_s3_uri}/raw/uploads/csv", "uploads_csv", "network_events", "csv"),
         (f"{base_s3_uri}/raw/uploads/json", "uploads_json", "network_events", "json"),
     ]
-    step2_elapsed = time.time() - step2_start
-    logger.info("[STEP 2 COMPLETE] Source paths constructed (%d sources) in %.2f sec", len(sources), step2_elapsed)
 
+    active_queries = []
     for input_path, category, iceberg_table, fmt in sources:
-        process_category(spark, input_path, category, iceberg_table, fmt)
+        q = start_streaming_query(spark, input_path, category, iceberg_table, fmt)
+        if q:
+            active_queries.append(q)
 
-    # Step 7: Spark Session Stop
-    step7_start = time.time()
-    logger.info("[STEP 7] Stopping SparkSession")
-    spark.stop()
-    step7_elapsed = time.time() - step7_start
-    logger.info("[STEP 7 COMPLETE] SparkSession stopped in %.2f sec", step7_elapsed)
+    logger.info(f"Active streaming queries: {len(active_queries)}. Entering continuous streaming loop...")
 
-    exec_time = round(time.time() - start_time, 2)
-    logger.info(f"🎉 Spark NOC ETL Ingestion finished in {exec_time}s.")
+    try:
+        spark.streams.awaitAnyTermination()
+    except KeyboardInterrupt:
+        logger.info("Received shutdown signal. Stopping active streaming queries...")
+        for q in active_queries:
+            q.stop()
+        spark.stop()
+        logger.info("Spark session stopped gracefully.")
 
 
 if __name__ == "__main__":
