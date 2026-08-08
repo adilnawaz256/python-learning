@@ -139,7 +139,7 @@ class RESTConnectorScheduler:
             or raw.get("site_id")
             or "NODE-GENERIC"
         )
-        region = raw.get("region") or "IN-GLOBAL"
+        region = raw.get("region") or "SA-RIYADH"
 
         return {
             "event_id": event_id,

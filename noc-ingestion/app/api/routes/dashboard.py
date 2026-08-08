@@ -143,7 +143,7 @@ async def get_dashboard_performance():
         "average_latency_ms": avg_latency,
         "average_packet_loss_pct": avg_packet_loss,
         "average_throughput_mbps": avg_throughput,
-        "top_performing_regions": ["IN-SOUTH-BANGALORE", "IN-WEST-MUMBAI"],
+        "top_performing_regions": ["SA-RIYADH", "SA-EASTERN"],
         "node_sample": health_records[:8],
     }
     return APIResponse(success=True, message="Retrieved dashboard performance telemetry.", data=data)

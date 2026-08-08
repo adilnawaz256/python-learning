@@ -5,10 +5,10 @@ from typing import List, Dict, Any
 
 VENDORS = ["Huawei", "Nokia", "Ericsson", "Cisco", "ZTE"]
 SEVERITIES = ["CRITICAL", "MAJOR", "MINOR", "WARNING", "INFO"]
-REGIONS = ["IN-NORTH-DELHI", "IN-WEST-MUMBAI", "IN-SOUTH-BANGALORE", "IN-EAST-KOLKATA", "IN-CENTRAL-HYDERABAD"]
+REGIONS = ["SA-RIYADH", "SA-MAKKAH", "SA-EASTERN", "SA-MADINAH", "SA-ASIR"]
 ALARM_TYPES = ["LinkDown", "BGPFlap", "HighTemperature", "PowerSupplyFailure", "OpticalPowerLow", "VSWR_High"]
 STATUSES = ["ACTIVE", "ACKNOWLEDGED", "CLEARED", "PENDING_DISPATCH"]
-TOWER_PREFIXES = ["TOWER-DEL", "TOWER-MUM", "TOWER-BLR", "TOWER-KOL", "TOWER-HYD"]
+TOWER_PREFIXES = ["RIY-GW", "JED-GW", "DMM-GW", "MED-GW", "ABH-GW"]
 
 
 class MockDataGenerator:
@@ -141,8 +141,8 @@ class MockDataGenerator:
                 "site_id": f"SITE-{i:03d}",
                 "site_name": f"NOC_Hub_{region.split('-')[-1]}_{i}",
                 "region": region,
-                "latitude": round(random.uniform(8.0, 35.0), 6),
-                "longitude": round(random.uniform(68.0, 97.0), 6),
+                "latitude": round(random.uniform(16.5, 30.5), 6),
+                "longitude": round(random.uniform(36.0, 50.5), 6),
                 "status": random.choice(["OPERATIONAL", "DEGRADED", "MAINTENANCE"]),
                 "power_backup": random.choice(["SOLAR_BATTERY", "DIESEL_GENERATOR", "GRID_PRIMARY"])
             })

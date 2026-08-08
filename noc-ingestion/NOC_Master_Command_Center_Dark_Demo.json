@@ -484,7 +484,7 @@
             "uid": "trino-iceberg"
           },
           "format": 0,
-          "rawSql": "SELECT SUM(cnt) AS value FROM (\n        SELECT COUNT(*) cnt FROM iceberg.noc.alarms WHERE source LIKE 'REST_%'\n        UNION ALL SELECT COUNT(*) FROM iceberg.noc.tickets WHERE source LIKE 'REST_%'\n        UNION ALL SELECT COUNT(*) FROM iceberg.noc.network_events WHERE source LIKE 'REST_%'\n        UNION ALL SELECT COUNT(*) FROM iceberg.noc.security_events WHERE source LIKE 'REST_%'\n        UNION ALL SELECT COUNT(*) FROM iceberg.noc.performance_metrics WHERE source LIKE 'REST_%'\n    )",
+          "rawSql": "SELECT COALESCE(SUM(cnt), 0) AS value FROM (\n    SELECT COUNT(*) cnt FROM iceberg.noc.alarms WHERE LOWER(source) LIKE '%rest%' OR LOWER(source) IN ('servicenow', 'trend micro', 'cyberark', 'generic rest')\n    UNION ALL SELECT COUNT(*) FROM iceberg.noc.tickets WHERE LOWER(source) LIKE '%rest%' OR LOWER(source) IN ('servicenow', 'trend micro', 'cyberark', 'generic rest')\n    UNION ALL SELECT COUNT(*) FROM iceberg.noc.network_events WHERE LOWER(source) LIKE '%rest%' OR LOWER(source) IN ('servicenow', 'trend micro', 'cyberark', 'generic rest')\n    UNION ALL SELECT COUNT(*) FROM iceberg.noc.security_events WHERE LOWER(source) LIKE '%rest%' OR LOWER(source) IN ('servicenow', 'trend micro', 'cyberark', 'generic rest')\n    UNION ALL SELECT COUNT(*) FROM iceberg.noc.performance_metrics WHERE LOWER(source) LIKE '%rest%' OR LOWER(source) IN ('servicenow', 'trend micro', 'cyberark', 'generic rest')\n)",
           "refId": "A"
         }
       ]
@@ -1096,7 +1096,7 @@
             "uid": "trino-iceberg"
           },
           "format": 0,
-          "rawSql": "SELECT SUM(cnt) AS value FROM (\n        SELECT COUNT(*) cnt FROM iceberg.noc.alarms WHERE event_timestamp >= current_timestamp - INTERVAL '24' HOUR\n        UNION ALL SELECT COUNT(*) FROM iceberg.noc.tickets WHERE event_timestamp >= current_timestamp - INTERVAL '24' HOUR\n        UNION ALL SELECT COUNT(*) FROM iceberg.noc.network_events WHERE event_timestamp >= current_timestamp - INTERVAL '24' HOUR\n        UNION ALL SELECT COUNT(*) FROM iceberg.noc.security_events WHERE event_timestamp >= current_timestamp - INTERVAL '24' HOUR\n        UNION ALL SELECT COUNT(*) FROM iceberg.noc.performance_metrics WHERE event_timestamp >= current_timestamp - INTERVAL '24' HOUR\n    )",
+          "rawSql": "SELECT COALESCE(SUM(cnt), 0) AS value FROM (\n    SELECT COUNT(*) cnt FROM iceberg.noc.alarms\n    UNION ALL SELECT COUNT(*) FROM iceberg.noc.tickets\n    UNION ALL SELECT COUNT(*) FROM iceberg.noc.network_events\n    UNION ALL SELECT COUNT(*) FROM iceberg.noc.security_events\n    UNION ALL SELECT COUNT(*) FROM iceberg.noc.performance_metrics\n)",
           "refId": "A"
         }
       ]
@@ -1296,7 +1296,7 @@
             "uid": "trino-iceberg"
           },
           "format": 0,
-          "rawSql": "SELECT date_trunc('hour', event_timestamp) AS time, COUNT(*) AS critical\n            FROM iceberg.noc.network_events\n            WHERE event_timestamp >= current_timestamp - INTERVAL '24' HOUR AND severity_clean='CRITICAL'\n            GROUP BY 1 ORDER BY 1",
+          "rawSql": "SELECT date_trunc('hour', event_timestamp) AS time, COUNT(*) AS critical\nFROM iceberg.noc.network_events\nWHERE severity_clean='CRITICAL'\nGROUP BY 1 ORDER BY 1",
           "refId": "A"
         },
         {
@@ -1305,7 +1305,7 @@
             "uid": "trino-iceberg"
           },
           "format": 0,
-          "rawSql": "SELECT date_trunc('hour', event_timestamp) AS time, COUNT(*) AS major\n            FROM iceberg.noc.network_events\n            WHERE event_timestamp >= current_timestamp - INTERVAL '24' HOUR AND severity_clean='MAJOR'\n            GROUP BY 1 ORDER BY 1",
+          "rawSql": "SELECT date_trunc('hour', event_timestamp) AS time, COUNT(*) AS major\nFROM iceberg.noc.network_events\nWHERE severity_clean='MAJOR'\nGROUP BY 1 ORDER BY 1",
           "refId": "B"
         }
       ]
@@ -1723,7 +1723,7 @@
             "uid": "trino-iceberg"
           },
           "format": 0,
-          "rawSql": "SELECT date_trunc('hour', event_timestamp) AS time, COUNT(*) AS threats\n            FROM iceberg.noc.security_events\n            WHERE event_timestamp >= current_timestamp - INTERVAL '24' HOUR\n            GROUP BY 1 ORDER BY 1",
+          "rawSql": "SELECT date_trunc('hour', event_timestamp) AS time, COUNT(*) AS threats\nFROM iceberg.noc.security_events\nGROUP BY 1 ORDER BY 1",
           "refId": "A"
         }
       ]
@@ -2164,7 +2164,7 @@
             "uid": "trino-iceberg"
           },
           "format": 0,
-          "rawSql": "SELECT date_trunc('hour', event_timestamp) AS time, COUNT(*) AS alarms\n            FROM iceberg.noc.alarms\n            WHERE event_timestamp >= current_timestamp - INTERVAL '24' HOUR\n            GROUP BY 1 ORDER BY 1",
+          "rawSql": "SELECT date_trunc('hour', event_timestamp) AS time, COUNT(*) AS alarms\nFROM iceberg.noc.alarms\nGROUP BY 1 ORDER BY 1",
           "refId": "A"
         }
       ]

@@ -5,10 +5,10 @@ from typing import List, Dict, Any
 
 VENDORS = ["Huawei", "Nokia", "Ericsson", "Cisco", "ZTE"]
 SEVERITIES = ["Critical", "Major", "Minor", "Warning"]
-REGIONS = ["IN-NORTH-DELHI", "IN-WEST-MUMBAI", "IN-SOUTH-BANGALORE", "IN-EAST-KOLKATA", "IN-CENTRAL-HYDERABAD"]
+REGIONS = ["SA-RIYADH", "SA-MAKKAH", "SA-EASTERN", "SA-MADINAH", "SA-ASIR"]
 ALARM_TYPES = ["LinkDown", "BGPFlap", "HighTemperature", "PowerSupplyFailure", "OpticalPowerLow", "VSWR_High"]
 STATUSES = ["ACTIVE", "ACKNOWLEDGED", "CLEARED", "PENDING_DISPATCH"]
-TOWER_PREFIXES = ["TOWER-DEL", "TOWER-MUM", "TOWER-BLR", "TOWER-KOL", "TOWER-HYD"]
+TOWER_PREFIXES = ["RIY-GW", "JED-GW", "DMM-GW", "MED-GW", "ABH-GW"]
 
 
 class DemoDataGenerator:

@@ -15,7 +15,7 @@ class KafkaSimulatorService:
         """Generates random realistic telecom NOC events."""
         sources = [EventSource.COMARCH_OSS, EventSource.ALARM_EVENTS, EventSource.TICKET_EVENTS]
         event_types = ["LinkDown", "BGPFlap", "HighPacketLoss", "FiberCutDetected", "HardwareFailure"]
-        nodes = ["ROUTER-DELHI-CORE-01", "TOWER-MUM-4G-902", "SWITCH-BLR-DC-04", "GATEWAY-HYD-5G-11"]
+        nodes = ["ROUTER-RIYADH-CORE-01", "TOWER-JEDDAH-4G-902", "SWITCH-DMM-DC-04", "GATEWAY-ABH-5G-11"]
         severities = [AlarmSeverity.CRITICAL, AlarmSeverity.MAJOR, AlarmSeverity.MINOR, AlarmSeverity.WARNING]
 
         events: List[KafkaIngestionMessage] = []
@@ -27,7 +27,7 @@ class KafkaSimulatorService:
                 timestamp=datetime.now(timezone.utc),
                 severity=severities[i % len(severities)],
                 node_id=nodes[i % len(nodes)],
-                region="IN-NORTH-1" if "DELHI" in nodes[i % len(nodes)] else "IN-WEST-1",
+                region="SA-RIYADH" if "RIYADH" in nodes[i % len(nodes)] else "SA-MAKKAH",
                 payload={
                     "interface_id": f"Gi0/{i}/1",
                     "affected_subscribers": (i + 1) * 120,
