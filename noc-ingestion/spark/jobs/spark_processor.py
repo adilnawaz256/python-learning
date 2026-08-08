@@ -122,6 +122,21 @@ def normalize_and_clean_dataframe(df):
     return df
 
 
+def check_table_exists(spark: SparkSession, full_table_name: str) -> bool:
+    """Checks whether an Apache Iceberg catalog table already exists."""
+    try:
+        if spark.catalog.tableExists(full_table_name):
+            return True
+    except Exception:
+        pass
+
+    try:
+        spark.read.table(full_table_name).limit(1).collect()
+        return True
+    except Exception:
+        return False
+
+
 def make_micro_batch_handler(category: str, iceberg_table_name: str):
     """Creates a micro-batch handler function for Structured Streaming writeStream.foreachBatch."""
     def process_micro_batch(batch_df, batch_id):
@@ -136,28 +151,34 @@ def make_micro_batch_handler(category: str, iceberg_table_name: str):
 
         logger.info(f"[STREAMING BATCH] Processing micro-batch {batch_id} for category '{category}' -> Iceberg 'iceberg.noc.{iceberg_table_name}'")
 
-        cleaned_df = normalize_and_clean_dataframe(batch_df)
-        bucket_name = os.getenv("MINIO_BUCKET", "noc-raw-data")
-
-        # 1. Append clean Parquet files to landing zone
-        target_parquet_path = f"s3a://{bucket_name}/processed/parquet/{category}/"
         try:
-            cleaned_df.write.mode("append").partitionBy("event_date").parquet(target_parquet_path)
-        except Exception as pe:
-            logger.warning(f"Parquet landing zone write note for {category}: {pe}")
+            cleaned_df = normalize_and_clean_dataframe(batch_df)
+            bucket_name = os.getenv("MINIO_BUCKET", "noc-raw-data")
 
-        # 2. Append to Apache Iceberg catalog table
-        full_iceberg_target = f"iceberg.noc.{iceberg_table_name}"
-        try:
+            # 1. Append clean Parquet files to landing zone
+            target_parquet_path = f"s3a://{bucket_name}/processed/parquet/{category}/"
             try:
+                cleaned_df.write.mode("append").partitionBy("event_date").parquet(target_parquet_path)
+            except Exception as pe:
+                logger.warning(f"Parquet landing zone write note for {category}: {pe}")
+
+            # 2. Append to Apache Iceberg catalog table
+            full_iceberg_target = f"iceberg.noc.{iceberg_table_name}"
+            spark = batch_df.sparkSession
+
+            is_existing = check_table_exists(spark, full_iceberg_target)
+
+            if is_existing:
+                logger.info(f"Table '{full_iceberg_target}' exists. Appending micro-batch {batch_id}...")
                 cleaned_df.writeTo(full_iceberg_target).tableProperty("write.format.default", "parquet").append()
-                logger.info(f"✅ Micro-batch {batch_id} appended to Iceberg table '{full_iceberg_target}'")
-            except Exception:
-                logger.info(f"Table '{full_iceberg_target}' not present. Creating table...")
+                logger.info(f"✅ Micro-batch {batch_id} appended to existing Iceberg table '{full_iceberg_target}'")
+            else:
+                logger.info(f"Table '{full_iceberg_target}' does not exist yet. Creating table...")
                 cleaned_df.writeTo(full_iceberg_target).tableProperty("write.format.default", "parquet").create()
                 logger.info(f"✅ Created and populated Iceberg table '{full_iceberg_target}'")
+
         except Exception as ie:
-            logger.error(f"❌ Failed to write micro-batch {batch_id} to Iceberg table '{full_iceberg_target}': {ie}")
+            logger.error(f"❌ Error processing micro-batch {batch_id} for category '{category}' (Iceberg table 'iceberg.noc.{iceberg_table_name}'): {ie}")
 
     return process_micro_batch
 
