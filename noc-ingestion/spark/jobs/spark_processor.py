@@ -23,7 +23,7 @@ KNOWN_ICEBERG_TABLES = set()
 
 
 def create_spark_session() -> SparkSession:
-    """Initializes SparkSession configured for MinIO S3A storage, Iceberg catalog, and Structured Streaming."""
+    """Initializes SparkSession configured for MinIO S3A storage, Iceberg catalog, FAIR scheduling, and Structured Streaming."""
     step_start = time.time()
     logger.info("[STEP 1] Starting SparkSession initialization")
     try:
@@ -47,6 +47,9 @@ def create_spark_session() -> SparkSession:
             .config("spark.hadoop.fs.s3a.fast.upload", "true")
             .config("spark.hadoop.fs.s3a.threads.max", "20")
             .config("spark.hadoop.fs.s3a.connection.maximum", "100")
+            .config("spark.scheduler.mode", "FAIR")
+            .config("spark.sql.shuffle.partitions", os.getenv("SPARK_SHUFFLE_PARTITIONS", "4"))
+            .config("spark.default.parallelism", os.getenv("SPARK_DEFAULT_PARALLELISM", "4"))
             .config("spark.sql.parquet.compression.codec", "snappy")
             .config("spark.sql.streaming.schemaInference", "true")
             .config("spark.sql.extensions", "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions")
@@ -67,7 +70,7 @@ def create_spark_session() -> SparkSession:
             logger.info(f"Hadoop S3A logger configuration info: {log_err}")
 
         elapsed = time.time() - step_start
-        logger.info("[STEP 1 COMPLETE] SparkSession initialized. Took %.2f sec", elapsed)
+        logger.info("[STEP 1 COMPLETE] SparkSession initialized with FAIR scheduler. Took %.2f sec", elapsed)
 
         # Create namespace schema 'noc' inside Iceberg catalog
         try:
@@ -150,6 +153,12 @@ def make_micro_batch_handler(category: str, iceberg_table_name: str):
         if batch_df is None:
             return
 
+        # Assign micro-batch job execution to category pool under Spark FAIR scheduler
+        try:
+            batch_df.sparkSession.sparkContext.setLocalProperty("spark.scheduler.pool", category)
+        except Exception:
+            pass
+
         # Fast non-blocking check to see if micro-batch contains data
         try:
             if not batch_df.head(1):
@@ -198,8 +207,8 @@ def start_streaming_query(spark: SparkSession, s3_input_path: str, category: str
     """Starts an incremental PySpark Structured Streaming query with S3A MinIO checkpointing and maxFilesPerTrigger."""
     bucket_name = os.getenv("MINIO_BUCKET", "noc-raw-data")
     checkpoint_location = f"s3a://{bucket_name}/checkpoints/{category}/"
-    trigger_seconds = int(os.getenv("SPARK_TRIGGER_SECONDS", "10"))
-    max_files_per_trigger = int(os.getenv("SPARK_MAX_FILES_PER_TRIGGER", "100"))
+    trigger_seconds = int(os.getenv("SPARK_TRIGGER_SECONDS", "15"))
+    max_files_per_trigger = int(os.getenv("SPARK_MAX_FILES_PER_TRIGGER", "50"))
 
     logger.info(f"Initializing streaming query for '{category}' at: {s3_input_path}")
     logger.info(f"Checkpoint location: {checkpoint_location}")
@@ -231,6 +240,7 @@ def start_streaming_query(spark: SparkSession, s3_input_path: str, category: str
 
         query = (
             df_stream.writeStream
+            .queryName(f"query_{category}")
             .foreachBatch(handler)
             .option("checkpointLocation", checkpoint_location)
             .trigger(processingTime=f"{trigger_seconds} seconds")
@@ -274,12 +284,12 @@ def main():
 
     try:
         while True:
-            time.sleep(5)
+            time.sleep(10)
             for q in list(active_queries):
                 if not q.isActive:
                     err = q.exception()
                     if err:
-                        logger.error(f"Streaming query '{q.id}' failed with exception: {err}")
+                        logger.error(f"Streaming query '{q.id}' (name: {q.name}) failed with exception: {err}")
     except KeyboardInterrupt:
         logger.info("Received shutdown signal. Stopping active streaming queries...")
         for q in active_queries:
