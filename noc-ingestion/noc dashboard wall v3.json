@@ -2537,7 +2537,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT \"date\" AS time, end_to_end_availability::double precision AS value FROM public.data_sample WHERE (\"date\") ORDER BY \"date\" DESC LIMIT 1;",
+          "rawSql": "SELECT\n  \"date\" AS time,\n  end_to_end_availability\nFROM public.data_sample\nWHERE (\"date\")\nORDER BY \"date\" DESC\nLIMIT 1;",
           "refId": "A"
         }
       ],
@@ -2933,7 +2933,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT \"date\" AS time, sla_compliance::double precision AS value FROM public.data_sample WHERE (\"date\") ORDER BY \"date\" DESC LIMIT 1;",
+          "rawSql": "SELECT\n  \"date\" AS time,\n  sla_compliance\nFROM public.data_sample\nWHERE (\"date\")\nORDER BY \"date\" DESC\nLIMIT 1;",
           "refId": "A"
         }
       ],
@@ -3268,7 +3268,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT \"date\" AS time, critical_alarms_count::double precision AS value FROM public.data_sample WHERE (\"date\") ORDER BY \"date\" DESC LIMIT 1;",
+          "rawSql": "SELECT\n  \"date\" AS time,\n  critical_alarms_count\nFROM public.data_sample\nWHERE (\"date\")\nORDER BY \"date\" DESC\nLIMIT 1;",
           "refId": "A"
         }
       ],
@@ -3449,7 +3449,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT \"date\" AS time, affected_sites::double precision AS value FROM public.data_sample WHERE (\"date\") ORDER BY \"date\" DESC LIMIT 1;",
+          "rawSql": "SELECT\n  \"date\" AS time,\n  affected_sites\nFROM public.data_sample\nWHERE (\"date\")\nORDER BY \"date\" DESC\nLIMIT 1;",
           "refId": "A"
         }
       ],
@@ -3616,7 +3616,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT \"date\" AS time, links_down::double precision AS value FROM public.data_sample WHERE (\"date\") ORDER BY \"date\" DESC LIMIT 1;",
+          "rawSql": "SELECT\n  \"date\" AS time,\n  links_down\nFROM public.data_sample\nWHERE (\"date\")\nORDER BY \"date\" DESC\nLIMIT 1;",
           "refId": "A"
         }
       ],
@@ -3953,7 +3953,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT \"date\" AS time, mttr::double precision AS value FROM public.data_sample WHERE (\"date\") ORDER BY \"date\" DESC LIMIT 1;",
+          "rawSql": "SELECT\n  \"date\" AS time,\n  mttr\nFROM public.data_sample\nWHERE (\"date\")\nORDER BY \"date\" DESC\nLIMIT 1;",
           "refId": "A"
         }
       ],
