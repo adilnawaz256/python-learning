@@ -2537,7 +2537,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT\n  \"date\" AS time,\n  end_to_end_availability\nFROM public.data_sample\nWHERE (\"date\")\nORDER BY \"date\" DESC\nLIMIT 1;",
+          "rawSql": "SELECT\n  \"date\" AS time,\n  end_to_end_availability\nFROM public.data_sample\nWHERE $__timeFilter(\"date\")\nORDER BY \"date\" DESC\nLIMIT 1;",
           "refId": "A"
         }
       ],
@@ -2933,7 +2933,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT\n  \"date\" AS time,\n  sla_compliance\nFROM public.data_sample\nWHERE (\"date\")\nORDER BY \"date\" DESC\nLIMIT 1;",
+          "rawSql": "SELECT\n  \"date\" AS time,\n  sla_compliance\nFROM public.data_sample\nWHERE $__timeFilter(\"date\")\nORDER BY \"date\" DESC\nLIMIT 1;",
           "refId": "A"
         }
       ],
@@ -3268,7 +3268,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT\n  \"date\" AS time,\n  critical_alarms_count\nFROM public.data_sample\nWHERE (\"date\")\nORDER BY \"date\" DESC\nLIMIT 1;",
+          "rawSql": "SELECT\n  \"date\" AS time,\n  critical_alarms_count\nFROM public.data_sample\nWHERE $__timeFilter(\"date\")\nORDER BY \"date\" DESC\nLIMIT 1;",
           "refId": "A"
         }
       ],
@@ -3449,7 +3449,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT\n  \"date\" AS time,\n  affected_sites\nFROM public.data_sample\nWHERE (\"date\")\nORDER BY \"date\" DESC\nLIMIT 1;",
+          "rawSql": "SELECT\n  \"date\" AS time,\n  affected_sites\nFROM public.data_sample\nWHERE $__timeFilter(\"date\")\nORDER BY \"date\" DESC\nLIMIT 1;",
           "refId": "A"
         }
       ],
@@ -3616,7 +3616,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT\n  \"date\" AS time,\n  links_down\nFROM public.data_sample\nWHERE (\"date\")\nORDER BY \"date\" DESC\nLIMIT 1;",
+          "rawSql": "SELECT\n  \"date\" AS time,\n  links_down\nFROM public.data_sample\nWHERE $__timeFilter(\"date\")\nORDER BY \"date\" DESC\nLIMIT 1;",
           "refId": "A"
         }
       ],
@@ -3953,7 +3953,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT\n  \"date\" AS time,\n  mttr\nFROM public.data_sample\nWHERE (\"date\")\nORDER BY \"date\" DESC\nLIMIT 1;",
+          "rawSql": "SELECT\n  \"date\" AS time,\n  mttr\nFROM public.data_sample\nWHERE $__timeFilter(\"date\")\nORDER BY \"date\" DESC\nLIMIT 1;",
           "refId": "A"
         }
       ],
