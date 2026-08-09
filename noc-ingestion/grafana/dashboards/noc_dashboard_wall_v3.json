@@ -40,7 +40,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, s1_interface_failures::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, s1_interface_failures::double precision AS s1_interface_failures, rrc_success_rate::double precision AS rrc_success_rate FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -69,7 +69,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, customer_trouble_tickets_open::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, network_trouble_tickets_open::double precision AS network_trouble_tickets_open, customer_trouble_tickets_open::double precision AS customer_trouble_tickets_open, provisioning_success_rate::double precision AS provisioning_success_rate, (network_trouble_tickets_open - customer_trouble_tickets_open)::double precision AS resolved_today, sla_compliance::double precision AS sla_compliance, session_establishment_network_success_rate::double precision AS session_establishment_network_success_rate, ((100 - end_to_end_availability) / 100.0)::double precision AS system_downtime FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -98,7 +98,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, critical_alarms_count::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, attach_success_rate::double precision AS attach_success_rate, service_request_success_rate::double precision AS service_request_success_rate, paging_success_rate::double precision AS paging_success_rate, eps_bearer_setup_success_rate::double precision AS eps_bearer_setup_success_rate, eps_bearer_drop_rate::double precision AS eps_bearer_drop_rate, (100 - tau_success_rate)::double precision AS congestion_rate, mme_cpu_utilization::double precision AS peak_utilization FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -127,7 +127,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, critical_alarms_count::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, alarm_storm_detection::double precision AS scff_status, sip_5xx_error_rate::double precision AS sip_overload, call_drop_rate_of_ims_mo::double precision AS call_drop_rate, max_registered_users::double precision AS max_registered_users FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -156,7 +156,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, sla_compliance::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, (mttr / 60.0)::double precision AS mttr_hrs, (100 - (mean_alarm_acknowledgment_time / 90.0 * 100))::double precision AS ack_rate, sla_compliance::double precision AS sla_compliance FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -185,7 +185,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, end_to_end_availability::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, online_users::double precision AS fred_sirs, critical_alarms_count::double precision AS critical_alarms_count, ran_active_alarms::double precision AS ran_active_alarms, suppressed_alarms_count::double precision AS suppressed_alarms_count, sites_85_prb::double precision AS sites_85_prb, transport_links_80_util::double precision AS transport_links_80_util FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -214,7 +214,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, sip_registration_sr::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, sip_registration_sr::double precision AS sip_registration_sr, mo_session_connection_rate::double precision AS mo_session_connection_rate FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -243,7 +243,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, sip_registration_sr::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, mt_session_connection_rate::double precision AS mt_session_connection_rate, call_setup_time_ms::double precision AS call_setup_time_ms, call_drop_rate_of_ims_mo::double precision AS call_drop_rate, total_traffic_mo_mt_erl::double precision AS traffic_erl, max_registered_users::double precision AS max_registered_users FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -272,7 +272,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, iot_ul_message_success_rate::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, iot_ul_message_success_rate::double precision AS iot_ul_message_success_rate, iot_dl_message_success_rate::double precision AS iot_dl_message_success_rate, iot_rach_success_rate::double precision AS iot_rach_success_rate FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -301,7 +301,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, site_down::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, site_down::double precision AS value FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -330,7 +330,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, mc_push_to_talk_attempts::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, total_number_of_lte_connected_subs::double precision AS lte_connected_subs, total_number_of_wifi_connected_subs::double precision AS wifi_connected_subs FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -359,7 +359,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, s1_success_rate::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, 0::double precision AS vswr_attention, s1_interface_failures::double precision AS mobility_failures, s1_success_rate::double precision AS inter_lte_ho_sr, s1_resets::double precision AS sector_down_count FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -388,7 +388,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, e_rab_success_rate::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, (100 - e_rab_success_rate)::double precision AS e_rab_drop_rate, volte_drop_rate::double precision AS volte_drop_rate, site_down::double precision AS site_down FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -417,7 +417,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, ran_active_alarms::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, site_down::double precision AS site_down, links_down::double precision AS links_down, suppressed_alarms_count::double precision AS suppressed_alarms_count, ran_active_alarms::double precision AS ran_active_alarms FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -446,7 +446,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, sla_compliance::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, customer_trouble_tickets_open::double precision AS sla_breach_count, (mean_alarm_clearance_time / 24.0)::double precision AS resolution_time_hrs FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -475,7 +475,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, smsc_traffic::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, sms_submission_success_rate::double precision AS sms_submission_success_rate, (100 - smsc_cpu_usage)::double precision AS smsc_availability FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -504,7 +504,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, transport_latency::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, transport_latency::double precision AS transport_latency, transport_packet_loss::double precision AS transport_packet_loss, transport_jitter::double precision AS transport_jitter, backhaul_availability::double precision AS bandwidth, 4.2::double precision AS throughput_gbps, (100 - transport_packet_loss)::double precision AS link_utilization, links_down::double precision AS links_down FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -552,7 +552,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, sms_delivery_success_rate::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, sms_delivery_success_rate::double precision AS value FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -581,7 +581,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, rrc_success_rate::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, volte_drop_rate::double precision AS \"VoLTE Drop\", e_rab_success_rate::double precision AS \"E-RAB SR\", end_to_end_availability::double precision AS \"RAN Avail\", rrc_success_rate::double precision AS \"RRC SR\", s1_success_rate::double precision AS \"S1 SR\", volte_cssr::double precision AS \"VoLTE CSSR\" FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -629,7 +629,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, emergency_call_success_rate::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, emergency_call_success_rate::double precision AS value FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -677,7 +677,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, end_to_end_availability::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, end_to_end_availability::double precision AS value FROM public.data_sample WHERE (date) ORDER BY date DESC LIMIT 1;",
           "refId": "A"
         }
       ],
@@ -706,7 +706,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, mc_push_to_talk_attempts::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, mc_push_to_talk_attempts::double precision AS \"PTT Attempts\" FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -792,7 +792,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, intra_lte_ho_success_rate::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, intra_lte_ho_success_rate::double precision AS value FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -821,7 +821,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, intra_lte_ho_success_rate::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, intra_lte_ho_success_rate::double precision AS \"HO SR\" FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -850,7 +850,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, sla_compliance::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, sla_compliance::double precision AS value FROM public.data_sample WHERE (date) ORDER BY date DESC LIMIT 1;",
           "refId": "A"
         }
       ],
@@ -879,7 +879,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, end_to_end_availability::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, end_to_end_availability::double precision AS value FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -908,7 +908,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, sla_compliance::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, sla_compliance::double precision AS value FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -937,7 +937,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, rrc_success_rate::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, end_to_end_availability::double precision AS ran_availability FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -966,7 +966,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, links_down::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, backhaul_availability::double precision AS value FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -1014,7 +1014,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, critical_alarms_count::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, critical_alarms_count::double precision AS value FROM public.data_sample WHERE (date) ORDER BY date DESC LIMIT 1;",
           "refId": "A"
         }
       ],
@@ -1062,7 +1062,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, transport_latency::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, transport_latency::double precision AS value FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -1091,7 +1091,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, affected_sites::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, affected_sites::double precision AS value FROM public.data_sample WHERE (date) ORDER BY date DESC LIMIT 1;",
           "refId": "A"
         }
       ],
@@ -1139,7 +1139,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, sla_compliance::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, (100 - sla_compliance)::double precision AS sla_breach_pct FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -1168,7 +1168,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, links_down::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, links_down::double precision AS value FROM public.data_sample WHERE (date) ORDER BY date DESC LIMIT 1;",
           "refId": "A"
         }
       ],
@@ -1197,7 +1197,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, incident_aging_timer::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, (incident_aging_timer / 4.0)::double precision AS ticket_aging_hrs FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -1245,7 +1245,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, attach_success_rate::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, iot_attach_success_rate::double precision AS value FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -1274,7 +1274,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, iot_device_availability::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, iot_device_availability::double precision AS value FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -1322,7 +1322,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, mttr::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, mttr::double precision AS value FROM public.data_sample WHERE (date) ORDER BY date DESC LIMIT 1;",
           "refId": "A"
         }
       ],
@@ -1351,7 +1351,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, site_down::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, site_down::double precision AS value FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -1418,7 +1418,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, smsc_traffic::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, smsc_traffic::double precision AS value FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -1466,7 +1466,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, sites_85_prb::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, sites_85_prb::double precision AS \"Sites\" FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -1495,7 +1495,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, transport_links_80_util::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, transport_links_80_util::double precision AS \"Links\" FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -1524,7 +1524,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, core_cpu_75::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, mme_cpu_utilization::double precision AS value FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -1553,7 +1553,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, packet_loss::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, core_cpu_75::double precision AS \"Core CPU > 75\" FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -1601,7 +1601,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, critical_alarms_count::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, (ddos_attacks_detected + sip_5xx_error_rate / 10.0)::double precision AS threat_score FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
@@ -1668,7 +1668,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, critical_alarms_count::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
+          "rawSql": "SELECT date AS time, critical_alarms_count::double precision AS value FROM public.data_sample WHERE (date) ORDER BY date ASC;",
           "refId": "A"
         }
       ],
