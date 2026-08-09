@@ -334,6 +334,7 @@ def main():
         (f"{base_s3_uri}/raw/rest", "rest", "network_events", "json"),
         (f"{base_s3_uri}/raw/uploads/csv", "uploads_csv", "network_events", "csv"),
         (f"{base_s3_uri}/raw/uploads/json", "uploads_json", "network_events", "json"),
+        (f"{base_s3_uri}/raw/data_sample", "data_sample", "data_sample", "json"),
     ]
 
     active_queries = []

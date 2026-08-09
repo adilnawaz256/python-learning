@@ -92,12 +92,13 @@ noc-raw-data/
 
 ## 📊 Grafana Starter Dashboards
 
-The system comes pre-configured with 5 Grafana dashboards querying Apache Iceberg tables via Trino:
-1. 📊 **NOC Alarms Analytics Dashboard**: Active Alarms by Severity & Vendor distribution.
-2. 🎫 **NOC Trouble Tickets Dashboard**: Incident Priority (P1-P4) & Resolution State metrics.
-3. 📡 **NOC Network Events Dashboard**: Cell tower outages & network health metrics by region.
-4. 🛡️ **NOC Security Threat Events Dashboard**: Threat levels & security event actions.
-5. 📈 **NOC Performance Metrics Dashboard**: Device CPU, Memory, Latency, & Packet Loss telemetry.
+The system comes pre-configured with Grafana dashboards querying Apache Iceberg tables via Trino:
+1. 🖥️ **NOC Dashboard Wall v3 / Master Command Center**: Daily NOC KPIs across RAN, Core, Transport, VoLTE/IMS, & Mission Critical services.
+2. 📊 **NOC Alarms Analytics Dashboard**: Active Alarms by Severity & Vendor distribution.
+3. 🎫 **NOC Trouble Tickets Dashboard**: Incident Priority (P1-P4) & Resolution State metrics.
+4. 📡 **NOC Network Events Dashboard**: Cell tower outages & network health metrics by region.
+5. 🛡️ **NOC Security Threat Events Dashboard**: Threat levels & security event actions.
+6. 📈 **NOC Performance Metrics Dashboard**: Device CPU, Memory, Latency, & Packet Loss telemetry.
 
 ---
 
