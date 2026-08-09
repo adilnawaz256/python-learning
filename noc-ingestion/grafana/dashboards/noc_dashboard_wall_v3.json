@@ -133,7 +133,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, network_trouble_tickets_open AS network_trouble_tickets_open, customer_trouble_tickets_open AS customer_trouble_tickets_open, provisioning_success_rate AS provisioning_success_rate, (network_trouble_tickets_open - customer_trouble_tickets_open) AS resolved_today, network_trouble_tickets_open AS network_trouble_tickets_open, sla_compliance AS sla_compliance, session_establishment_network_success_rate AS session_establishment_network_success_rate, (100 - end_to_end_availability) / 100.0 AS system_downtime FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC",
+          "rawSql": "SELECT\n  \"date\" AS time,\n  network_trouble_tickets_open AS \"Network Trouble Tickets Open\",\n  customer_trouble_tickets_open AS \"Customer Trouble Tickets Open\",\n  provisioning_success_rate AS \"Provisioning Success Rate\",\n  (network_trouble_tickets_open - customer_trouble_tickets_open) AS \"Resolved Today\",\n  sla_compliance AS \"SLA Compliance\",\n  session_establishment_network_success_rate AS \"Session Establishment Network SR\",\n  (100 - end_to_end_availability) / 100.0 AS \"System Downtime\"\nFROM public.data_sample\nWHERE $__timeFilter(\"date\")\nORDER BY \"date\" ASC;",
           "refId": "A"
         }
       ],
@@ -1249,7 +1249,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, (5000 - affected_sites * 10) AS normal_sites, ran_active_alarms AS live_nodes, site_down AS site_down FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC",
+          "rawSql": "SELECT\n  NOW() AS time,\n  region,\n  latitude,\n  longitude,\n  status,\n  region AS label\nFROM (\n  VALUES\n    ('Tabuk',             28.3835, 36.5662, 0),\n    ('Al Jawf',           29.9697, 40.2064, 0),\n    ('Northern Borders',  30.9753, 41.0381, 1),\n    ('Hail',              27.5114, 41.7208, 0),\n    ('Al Qassim',         26.3592, 43.9818, 0),\n    ('Madinah',           24.5247, 39.5692, 0),\n    ('Riyadh',            24.7136, 46.6753, 2),\n    ('Makkah',            21.3891, 39.8579, 1),\n    ('Asir',              18.2164, 42.5053, 0),\n    ('Najran',            17.5656, 44.2289, 0),\n    ('Jazan',             16.8892, 42.5511, 0),\n    ('Eastern Province',  26.4207, 50.0888, 0),\n    ('Al Bahah',          20.0129, 41.4677, 0)\n) AS t(region, latitude, longitude, status);",
           "refId": "A"
         }
       ],
@@ -1640,7 +1640,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, (100 - e_rab_success_rate) AS e_rab_drop_rate, (100 - e_rab_success_rate) AS e_rab_drop_rate, volte_drop_rate AS volte_drop_rate, site_down AS site_down FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC",
+          "rawSql": "SELECT\n  \"date\" AS time,\n  (100 - e_rab_success_rate) AS \"E-RAB Drop Rate\",\n  volte_drop_rate AS \"VoLTE Drop Rate\",\n  site_down AS \"Sites Down\"\nFROM public.data_sample\nWHERE $__timeFilter(\"date\")\nORDER BY \"date\" ASC;",
           "refId": "A"
         }
       ],
@@ -2364,7 +2364,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT volte_drop_rate AS \"VoLTE Drop\", e_rab_success_rate AS \"E-RAB SR\", end_to_end_availability AS \"RAN Avail\", rrc_success_rate AS \"RRC SR\", s1_success_rate AS \"S1 SR\", volte_cssr AS \"VoLTE CSSR\" FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date DESC LIMIT 1",
+          "rawSql": "SELECT\n  \"date\" AS time,\n  volte_drop_rate AS \"VoLTE Drop\",\n  e_rab_success_rate AS \"E-RAB SR\",\n  end_to_end_availability AS \"RAN Avail\",\n  rrc_success_rate AS \"RRC SR\",\n  s1_success_rate AS \"S1 SR\",\n  volte_cssr AS \"VoLTE CSSR\"\nFROM public.data_sample\nWHERE $__timeFilter(\"date\")\nORDER BY \"date\" DESC\nLIMIT 1;",
           "refId": "A"
         }
       ],
@@ -4016,7 +4016,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT * FROM (VALUES\n('Tabuk', 27.99, 36.57, 0),\n('Al Jawf', 29.79, 40.10, 0),\n('Al Hudud Ash Shamaliyah', 30.98, 41.13, 1),\n('Hail', 27.52, 41.69, 0),\n('Al Qasim', 26.33, 43.97, 0),\n('Al Madinah', 24.47, 39.61, 0),\n('Ar Riyad', 24.71, 46.68, 2),\n('Makkah', 21.39, 39.86, 1),\n('Asir', 18.22, 42.51, 0),\n('Najran', 17.49, 44.13, 0),\n('Jizan', 16.89, 42.55, 0),\n('Ash Sharqiyah', 26.28, 49.99, 0),\n('Al Curayyat', 31.33, 37.34, 0)\n) AS t(region, lat, lon, status)",
+          "rawSql": "SELECT\n  NOW() AS time,\n  region,\n  latitude,\n  longitude,\n  status,\n  region AS label\nFROM (\n  VALUES\n    ('Tabuk',             28.3835, 36.5662, 0),\n    ('Al Jawf',           29.9697, 40.2064, 0),\n    ('Northern Borders',  30.9753, 41.0381, 1),\n    ('Hail',              27.5114, 41.7208, 0),\n    ('Al Qassim',         26.3592, 43.9818, 0),\n    ('Madinah',           24.5247, 39.5692, 0),\n    ('Riyadh',            24.7136, 46.6753, 2),\n    ('Makkah',            21.3891, 39.8579, 1),\n    ('Asir',              18.2164, 42.5053, 0),\n    ('Najran',            17.5656, 44.2289, 0),\n    ('Jazan',             16.8892, 42.5511, 0),\n    ('Eastern Province',  26.4207, 50.0888, 0),\n    ('Al Bahah',          20.0129, 41.4677, 0)\n) AS t(region, latitude, longitude, status);",
           "refId": "A"
         }
       ],
