@@ -51,15 +51,6 @@ class DemoFileGenerator:
             json.dump(alarms_data[:50], f, indent=2)
         generated_files["alarm.json"] = json_path
 
-        # 5. Generate data_sample.csv and data_sample.json
-        try:
-            from app.demo.data_sample_generator import DataSampleGenerator
-            c_p, j_p = DataSampleGenerator.generate_and_save_files(target_dir=self.target_dir)
-            generated_files["data_sample.csv"] = c_p
-            generated_files["data_sample.json"] = j_p
-        except Exception as e:
-            pass
-
         log_event(
             event_type="Demo Files Generated",
             status="SUCCESS",
