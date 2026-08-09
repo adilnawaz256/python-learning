@@ -1,5 +1,13 @@
 apiVersion: 1
 
+deleteDatasources:
+  - name: grafana-postgresql-datasource
+    orgId: 1
+  - name: AWS PostgreSQL RDS
+    orgId: 1
+  - name: PostgreSQL RDS
+    orgId: 1
+
 datasources:
   - name: grafana-postgresql-datasource
     uid: grafana-postgresql-datasource

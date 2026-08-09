@@ -6,7 +6,7 @@ datasources:
     type: trino-datasource
     access: proxy
     url: http://noc-trino:8080
-    isDefault: true
+    isDefault: false
     editable: true
 
     jsonData:
