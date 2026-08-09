@@ -37,7 +37,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, s1_interface_failures::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -66,7 +66,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, customer_trouble_tickets_open::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -95,7 +95,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, critical_alarms_count::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -124,7 +124,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, critical_alarms_count::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -153,7 +153,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, sla_compliance::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -182,7 +182,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, end_to_end_availability::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -211,7 +211,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, sip_registration_sr::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -240,7 +240,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, sip_registration_sr::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -269,7 +269,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, iot_ul_message_success_rate::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -298,7 +298,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, site_down::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -327,7 +327,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, mc_push_to_talk_attempts::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -356,7 +356,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, s1_success_rate::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -385,7 +385,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, e_rab_success_rate::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -414,7 +414,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, ran_active_alarms::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -443,7 +443,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, sla_compliance::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -472,7 +472,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, smsc_traffic::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -501,7 +501,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, transport_latency::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -549,7 +549,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, sms_delivery_success_rate::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -578,7 +578,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, rrc_success_rate::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -626,7 +626,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, emergency_call_success_rate::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -674,7 +674,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, end_to_end_availability::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -703,7 +703,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, mc_push_to_talk_attempts::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -789,7 +789,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, intra_lte_ho_success_rate::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -818,7 +818,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, intra_lte_ho_success_rate::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -847,7 +847,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, sla_compliance::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -876,7 +876,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, end_to_end_availability::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -905,7 +905,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, sla_compliance::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -934,7 +934,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, rrc_success_rate::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -963,7 +963,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, links_down::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -1011,7 +1011,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, critical_alarms_count::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -1059,7 +1059,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, transport_latency::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -1088,7 +1088,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, affected_sites::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -1136,7 +1136,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, sla_compliance::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -1165,7 +1165,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, links_down::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -1194,7 +1194,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, incident_aging_timer::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -1242,7 +1242,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, attach_success_rate::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -1271,7 +1271,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, iot_device_availability::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -1319,7 +1319,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, mttr::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -1348,7 +1348,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, site_down::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -1415,7 +1415,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, smsc_traffic::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -1463,7 +1463,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, sites_85_prb::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -1492,7 +1492,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, transport_links_80_util::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -1521,7 +1521,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, core_cpu_75::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -1550,7 +1550,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, packet_loss::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -1598,7 +1598,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, critical_alarms_count::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
@@ -1665,7 +1665,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres"
+            "uid": "grafana-postgresql-datasource"
           },
           "format": 0,
           "rawSql": "SELECT date AS time, critical_alarms_count::double precision AS value FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC;",
