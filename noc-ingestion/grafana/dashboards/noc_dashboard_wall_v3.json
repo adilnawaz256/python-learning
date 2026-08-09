@@ -1,13 +1,23 @@
 {
-  "annotations": {
-    "list": []
-  },
+  "title": "NOC Dashboard Wall v3",
+  "uid": "noc-dashboard-wall-v3-slug",
+  "schemaVersion": 39,
+  "version": 1,
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
   "id": null,
   "links": [],
   "liveNow": true,
+  "refresh": "10s",
+  "tags": [
+    "NOC",
+    "Telemetry",
+    "Command Center"
+  ],
+  "annotations": {
+    "list": []
+  },
   "panels": [
     {
       "id": 1010,
@@ -1666,15 +1676,5 @@
       "transparent": false,
       "description": ""
     }
-  ],
-  "refresh": "10s",
-  "schemaVersion": 39,
-  "tags": [
-    "NOC",
-    "Telemetry",
-    "Command Center"
-  ],
-  "title": "NOC Dashboard Wall v3 (Alt)",
-  "uid": "noc-dashboard-wall-v3-alt",
-  "version": 1
+  ]
 }
