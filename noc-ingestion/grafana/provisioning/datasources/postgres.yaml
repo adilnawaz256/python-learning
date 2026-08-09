@@ -19,7 +19,7 @@ datasources:
       password: StrongPassword123!
     jsonData:
       database: data_graf
-      sslmode: disable
+      sslmode: require
       postgresVersion: 1200
     isDefault: true
     editable: true
