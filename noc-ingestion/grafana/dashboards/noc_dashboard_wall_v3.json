@@ -2537,7 +2537,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT end_to_end_availability FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date DESC LIMIT 1",
+          "rawSql": "SELECT \"date\" AS time, end_to_end_availability::double precision AS value FROM public.data_sample WHERE (\"date\") ORDER BY \"date\" DESC LIMIT 1;",
           "refId": "A"
         }
       ],
@@ -2933,7 +2933,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT sla_compliance FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date DESC LIMIT 1",
+          "rawSql": "SELECT \"date\" AS time, sla_compliance::double precision AS value FROM public.data_sample WHERE (\"date\") ORDER BY \"date\" DESC LIMIT 1;",
           "refId": "A"
         }
       ],
@@ -3268,7 +3268,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT critical_alarms_count FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date DESC LIMIT 1",
+          "rawSql": "SELECT \"date\" AS time, critical_alarms_count::double precision AS value FROM public.data_sample WHERE (\"date\") ORDER BY \"date\" DESC LIMIT 1;",
           "refId": "A"
         }
       ],
@@ -3449,7 +3449,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT affected_sites FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date DESC LIMIT 1",
+          "rawSql": "SELECT \"date\" AS time, affected_sites::double precision AS value FROM public.data_sample WHERE (\"date\") ORDER BY \"date\" DESC LIMIT 1;",
           "refId": "A"
         }
       ],
@@ -3616,7 +3616,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT links_down FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date DESC LIMIT 1",
+          "rawSql": "SELECT \"date\" AS time, links_down::double precision AS value FROM public.data_sample WHERE (\"date\") ORDER BY \"date\" DESC LIMIT 1;",
           "refId": "A"
         }
       ],
@@ -3674,11 +3674,11 @@
       "targets": [
         {
           "datasource": {
-            "type": "postgres",
-            "uid": "grafana-postgresql-datasource"
+            "type": "trino-datasource",
+            "uid": "trino-iceberg"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, (incident_aging_timer / 4.0) AS ticket_aging_hrs FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC",
+          "rawSql": "SELECT date_trunc('day', created_at) AS time, count(*) AS ticket_aging_hrs FROM iceberg.noc.tickets GROUP BY 1 ORDER BY 1 ASC;",
           "refId": "A"
         }
       ],
@@ -3953,7 +3953,7 @@
             "uid": "grafana-postgresql-datasource"
           },
           "format": "time_series",
-          "rawSql": "SELECT mttr FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date DESC LIMIT 1",
+          "rawSql": "SELECT \"date\" AS time, mttr::double precision AS value FROM public.data_sample WHERE (\"date\") ORDER BY \"date\" DESC LIMIT 1;",
           "refId": "A"
         }
       ],
@@ -4480,11 +4480,11 @@
       "targets": [
         {
           "datasource": {
-            "type": "postgres",
-            "uid": "grafana-postgresql-datasource"
+            "type": "trino-datasource",
+            "uid": "trino-iceberg"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, mme_cpu_utilization FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC",
+          "rawSql": "SELECT date_trunc('hour', metric_timestamp) AS time, avg(metric_value) AS value FROM iceberg.noc.performance_metrics WHERE metric_name = 'cpu_utilization' GROUP BY 1 ORDER BY 1 ASC;",
           "refId": "A"
         }
       ],
@@ -4688,11 +4688,11 @@
       "targets": [
         {
           "datasource": {
-            "type": "postgres",
-            "uid": "grafana-postgresql-datasource"
+            "type": "trino-datasource",
+            "uid": "trino-iceberg"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, (ddos_attacks_detected + sip_5xx_error_rate / 10.0) AS threat_score FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC",
+          "rawSql": "SELECT date_trunc('hour', event_timestamp) AS time, count(*) AS threat_score FROM iceberg.noc.security_events GROUP BY 1 ORDER BY 1 ASC;",
           "refId": "A"
         }
       ],
@@ -4819,11 +4819,11 @@
       "targets": [
         {
           "datasource": {
-            "type": "postgres",
-            "uid": "grafana-postgresql-datasource"
+            "type": "trino-datasource",
+            "uid": "trino-iceberg"
           },
           "format": "time_series",
-          "rawSql": "SELECT date AS time, critical_alarms_count FROM public.data_sample WHERE $__timeFilter(date) ORDER BY date ASC",
+          "rawSql": "SELECT date_trunc('hour', event_timestamp) AS time, count(*) AS value FROM iceberg.noc.alarms GROUP BY 1 ORDER BY 1 ASC;",
           "refId": "A"
         }
       ],
