@@ -1,0 +1,17 @@
+apiVersion: 1
+
+datasources:
+  - name: AWS PostgreSQL RDS
+    uid: grafana-postgresql-datasource
+    type: postgres
+    access: proxy
+    url: invertio.cn00mqk2yb6c.ap-southeast-2.rds.amazonaws.com:5432
+    user: data_graf_user
+    secureJsonData:
+      password: StrongPassword123!
+    jsonData:
+      database: data_graf
+      sslmode: disable
+      postgresVersion: 1200
+    isDefault: false
+    editable: true
