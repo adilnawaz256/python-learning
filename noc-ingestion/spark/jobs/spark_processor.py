@@ -12,7 +12,9 @@ from pyspark.sql.functions import (
     lit,
     current_timestamp,
     date_format,
+    get_json_object,
 )
+from pyspark.sql.types import StructType, MapType, StringType
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -20,6 +22,48 @@ logger = logging.getLogger("NOC-Spark-ETL-Processor")
 
 # Global in-memory cache for confirmed existing Iceberg tables
 KNOWN_ICEBERG_TABLES = set()
+
+
+def extract_field_from_payload(df, target_col_name, payload_candidates):
+    """
+    Safely extracts `target_col_name` from top-level `df` or nested `payload`.
+    Supports StructType, MapType, and JSON StringType safely.
+    """
+    if target_col_name in df.columns:
+        return df
+
+    if "payload" not in df.columns:
+        return df.withColumn(target_col_name, lit(None).cast("string"))
+
+    payload_dtype = df.schema["payload"].dataType
+
+    # 1. PySpark StructType (ROW)
+    if isinstance(payload_dtype, StructType):
+        struct_field_names = [f.name for f in payload_dtype.fields]
+        matched_field = next((c for c in payload_candidates if c in struct_field_names), None)
+        if matched_field:
+            return df.withColumn(target_col_name, col(f"payload.{matched_field}").cast("string"))
+        else:
+            return df.withColumn(target_col_name, lit(None).cast("string"))
+
+    # 2. PySpark MapType
+    elif isinstance(payload_dtype, MapType):
+        expr = None
+        for candidate in payload_candidates:
+            cand_expr = col("payload")[candidate]
+            expr = cand_expr if expr is None else coalesce(expr, cand_expr)
+        return df.withColumn(target_col_name, expr.cast("string"))
+
+    # 3. PySpark StringType (JSON string)
+    elif isinstance(payload_dtype, StringType):
+        expr = None
+        for candidate in payload_candidates:
+            cand_expr = get_json_object(col("payload"), f"$.{candidate}")
+            expr = cand_expr if expr is None else coalesce(expr, cand_expr)
+        return df.withColumn(target_col_name, expr.cast("string"))
+
+    else:
+        return df.withColumn(target_col_name, lit(None).cast("string"))
 
 
 def create_spark_session() -> SparkSession:
@@ -86,7 +130,7 @@ def create_spark_session() -> SparkSession:
 
 
 def normalize_and_clean_dataframe(df):
-    """Performs schema normalization, severity standardization, timestamp parsing, and deduplication."""
+    """Performs schema normalization, severity standardization, timestamp parsing, deduplication, and nested payload extraction."""
     # 1. Normalize Severity
     if "severity" in df.columns:
         df = df.withColumn(
@@ -114,7 +158,13 @@ def normalize_and_clean_dataframe(df):
 
     df = df.withColumn("event_date", date_format(col("event_timestamp"), "yyyy-MM-dd"))
 
-    # 3. Deduplication
+    # 3. Extract key entity attributes from nested payload to top-level columns if missing
+    df = extract_field_from_payload(df, "vendor", ["vendor", "vendor_name", "vendorName", "manufacturer"])
+    df = extract_field_from_payload(df, "site_name", ["site_name", "siteName", "site_id", "siteId"])
+    df = extract_field_from_payload(df, "device_name", ["device_name", "deviceName", "device_id", "deviceId", "node_name"])
+    df = extract_field_from_payload(df, "ticket_id", ["ticket_id", "ticketId", "inc_id", "incident_id"])
+
+    # 4. Deduplication
     id_col = None
     for candidate in ["event_id", "alarm_id", "ticket_id", "metric_id"]:
         if candidate in df.columns:
